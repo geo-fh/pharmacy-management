@@ -5,19 +5,9 @@ function validateLogin() {
   var usertype;
   xhttp.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
-      switch(this.responseText) {
-        case 'pharmacist':
-          usertype = 1;
-          break;
-        case 'doctor':
-          usertype = 2;
-          break;
-        case 'patient':
-          usertype = 3;
-          break;
-        default:
-          alert('Incorrect email or password');
-          usertype = 0;
+      usertype = this.responseText;
+      if(usertype != 1 && usertype != 2 && usertype != 3) {
+        alert('Incorrect email or password.');
       }
       saveSession(email, usertype);
     }

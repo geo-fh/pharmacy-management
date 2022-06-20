@@ -101,12 +101,13 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6 text-nowrap">
-                                    <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable"><label class="form-label">Show&nbsp;<select class="d-inline-block form-select form-select-sm">
-                                                <option value="10" selected="">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select>&nbsp;</label></div>
+                                    <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable"><label class="form-label">Show&nbsp;
+                                        <select id="selectedLimit" class="d-inline-block form-select form-select-sm" onchange="populateStock()">
+                                            <option value="10" selected="">10</option>
+                                            <option value="25">25</option>
+                                            <option value="50">50</option>
+                                            <option value="100">100</option>
+                                        </select>&nbsp;</label></div>
                                 </div>
                                 <div class="col-xxl-4 d-xxl-flex justify-content-xxl-end"><button class="btn btn-primary" type="button" data-bs-target="#modal-1" data-bs-toggle="modal">Add To Stock</button>
                                     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1" style="text-align: center;">
@@ -149,25 +150,8 @@
                                             <th>Operations</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>Medication 1</td>
-                                            <td>50</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>
-                                                <div class="btn-group" role="group"><button class="btn btn-primary" type="button">Edit</button><button class="btn btn-primary" type="button">Remove</button></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>2</td>
-                                            <td>Medication 1</td>
-                                            <td>63</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>
-                                                <div class="btn-group" role="group"><button class="btn btn-primary" type="button">Edit</button><button class="btn btn-primary" type="button">Remove</button></div>
-                                            </td>
-                                        </tr>
+                                    <tbody id="stockList">
+                                        <!-- This gets filled by JavaScript -->
                                     </tbody>
                                 </table>
                             </div>
@@ -205,6 +189,7 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="assets/js/Portfolio-with-Category-switcher.js"></script>
     <script src="assets/js/theme.js"></script>
+    <script src="assets/js/stock.js"></script>
 </body>
 
 </html>

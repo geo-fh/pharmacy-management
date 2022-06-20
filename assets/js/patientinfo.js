@@ -11,7 +11,7 @@ if (this.readyState == 4 && this.status == 200) {
     document.getElementById("city").value = 'Beirut';
     document.getElementById("address").value = info[0].address;
     document.getElementById("nav_name").innerText = info[0].first_name + ' ' + info[0].last_name;
-
+    console.log(info);
 }
 };
 xhttp.open("POST", "assets/php/selectFromPatient.php", true);
