@@ -117,7 +117,7 @@
                             <div class="d-none d-sm-block topbar-divider"></div>
                             <li class="nav-item dropdown no-arrow">
                                 <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link"
-                                        aria-expanded="false" data-bs-toggle="dropdown" href="#"><span
+                                        aria-expanded="false" data-bs-toggle="dropdown" href="#"><span id="nav-name"
                                             class="d-none d-lg-inline me-2 text-gray-600 small">Patient Name</span><i
                                             class="fas fa-caret-square-down"></i></a>
                                     <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in"><a
@@ -197,10 +197,10 @@
                                 <table class="table centertable">
                                     <thead>
                                         <tr>
-                                            <th onclick="sortColumn('batch_id')">Batch ID</th>
-                                            <th onclick="sortColumn('medication_name')">Medication</th>
-                                            <th onclick="sortColumn('quantity')">Quantity</th>
-                                            <th onclick="sortColumn('expiration_date')">Expiry Date</th>
+                                            <th onclick="sortColumn('batch_id', 0)">Batch ID</th>
+                                            <th onclick="sortColumn('medication_name', 1)">Medication</th>
+                                            <th onclick="sortColumn('quantity', 2)">Quantity</th>
+                                            <th onclick="sortColumn('expiration_date', 3)">Expiry Date</th>
                                             <th>Operations</th>
                                         </tr>
                                     </thead>
@@ -242,12 +242,13 @@
     </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
     <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="assets/js/Portfolio-with-Category-switcher.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="assets/js/theme.js"></script>
+    <script src="assets/js/database.js"></script>
     <script src="assets/js/stock.js"></script>
 </body>
 

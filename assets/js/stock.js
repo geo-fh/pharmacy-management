@@ -1,62 +1,82 @@
 var stock;
-var sortDirection = false;
+var sortDirection = [false, false, false, false];
 
-window.onload = () => {
+$(function() {
     fetchStock();
-}
+    loadUser();
+})
 
 function fetchStock() {
-    fetch("assets/php/selectAllStock.php").then((res) => res.json())
-        .then(response => {
-            stock = response;
-            populateStock();
-        }).catch(error => console.log(error));
+    postData("assets/php/selectAllStock.php", '')
+    .then(data => {
+      stock = data;
+      populateStock();
+    });
 }
 
 function populateStock() {
-    var stockList = document.getElementById('stockList');
     var limit = document.getElementById('selectedLimit').value;
-    var tableData = '';
-    for (let i = 0; i < Math.min(stock.length, limit); i++) {
-        tableData += `<tr><td>${stock[i].batch_id}</td><td>${stock[i].medication_name}</td><td>${stock[i].quantity}</td><td>${stock[i].expiration_date}</td><td><div class=\"btn-group\" role=\"group\"><button class=\"btn btn-primary\" id=\"editbatch${stock[i].batch_id}\" type=\"button\">Edit</button><button class=\"btn btn-primary\" id=\"removebatch${stock[i].batch_id}\" type=\"button\">Remove</button></div></td></tr>`;
+    var r = new Array(), j = -1;
+    for (var i=0, size=Math.min(stock.length, limit); i<size; i++){
+        r[++j] = "<tr><td>";
+        r[++j] = stock[i].batch_id;
+        r[++j] = "</td><td>";
+        r[++j] = stock[i].medication_name;
+        r[++j] = "</td><td>";
+        r[++j] = stock[i].quantity;
+        r[++j] = "</td><td>";
+        r[++j] = getDate(new Date(stock[i].expiration_date));
+        r[++j] = "</td><td><div class=\"btn-group\" role=\"group\"><button class=\"btn btn-primary\" id=\"editbatch";
+        r[++j] = stock[i].batch_id;
+        r[++j] = "\" type=\"button\">Edit</button><button class=\"btn btn-primary\" id=\"removebatch";
+        r[++j] = stock[i].batch_id;
+        r[++j] = "\" type=\"button\">Remove</button></div></td></tr>";
     }
-    stockList.innerHTML = tableData;
+    $('#stockList').html(r.join(''));
     // document.getElementById('dataTable_info').innerText = "Showing " + ;
 }
 
-function sortColumn(columnName) {
+function sortColumn(columnName, index) {
     switch (columnName) {
         case 'batch_id':
-            if (sortDirection) {
-                stock.sort((a, b) => parseInt(a.batch_id) - parseInt(b.batch_id));
-            } else {
+            if (sortDirection[0]) {
                 stock.sort((a, b) => parseInt(b.batch_id) - parseInt(a.batch_id));
+            } else {
+                stock.sort((a, b) => parseInt(a.batch_id) - parseInt(b.batch_id));
             }
             break;
         case 'medication_name':
-            if (sortDirection) {
-                stock.sort((a, b) => toString(a.medication_name) - toString(b.medication_name));
+            if (sortDirection[1]) {
+                stock.sort((a, b) => b.medication_name.localeCompare(a.medication_name));
             } else {
-                stock.sort((a, b) => toString(b.medication_name) - toString(a.medication_name));
+                stock.sort((a, b) => a.medication_name.localeCompare(b.medication_name));
             }
             break;
         case 'quantity':
-            if (sortDirection) {
-                stock.sort((a, b) => parseInt(a.quantity) - parseInt(b.quantity));
-            } else {
+            if (sortDirection[2]) {
                 stock.sort((a, b) => parseInt(b.quantity) - parseInt(a.quantity));
+            } else {
+                stock.sort((a, b) => parseInt(a.quantity) - parseInt(b.quantity));
             }
             break;
         case 'expiration_date':
-            if (sortDirection) {
-                stock.sort((a, b) => Date(a.expiration_date) - Date(b.expiration_date));
+            if (sortDirection[3]) {
+                stock.sort((a, b) => (new Date(a.expiration_date)).getTime() - (new Date(b.expiration_date)).getTime());
             } else {
-                stock.sort((a, b) => Date(b.expiration_date) - Date(a.expiration_date));
+                stock.sort((a, b) => (new Date(b.expiration_date)).getTime() - (new Date(a.expiration_date)).getTime());
             }
             break;
         default:
             return;
     }
-    sortDirection = !sortDirection;
+    sortDirection[index] = !sortDirection[index];
     populateStock();
+}
+
+function getDate(date) {
+    let months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep", "Oct","Nov","Dec"];
+    let day = date.getDate();
+    let month = months[date.getMonth()];
+    let year = date.getFullYear();
+    return `${day}-${month}-${year}`;
 }

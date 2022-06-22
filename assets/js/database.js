@@ -21,3 +21,7 @@ function prepareData(details) {
   }
   return formBody.join("&");
 }
+
+function loadUser() {
+  
+}
