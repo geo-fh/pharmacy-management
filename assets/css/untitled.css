@@ -5,3 +5,7 @@
 .form-control {
   color: black!important;
 }
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}

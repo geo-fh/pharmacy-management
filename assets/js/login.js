@@ -1,6 +1,6 @@
 const loginForm = document.getElementById("loginForm");
 
-loginForm.addEventListener("submit", function(e) {
+loginForm.addEventListener("submit", function (e) {
   e.preventDefault();
   var usertype;
   var details = {
@@ -9,7 +9,7 @@ loginForm.addEventListener("submit", function(e) {
   };
   postData("assets/php/login.php", prepareData(details))
     .then(data => {
-      if(data.length == 0) {
+      if (data.length == 0) {
         alert('Incorrect email or password.');
         return;
       } else {
