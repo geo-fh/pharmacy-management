@@ -7,11 +7,8 @@
 		$password = $_POST['password'];
 		$dbquery = $con->query("SELECT user_type FROM user WHERE email_address = '$email' AND password = '$password'");
 		
-		if(mysqli_affected_rows($con) > 0) {
-			echo mysqli_fetch_row($dbquery)[0];
-		} else {
-			echo 'notfound';
-		}
+		$result = mysqli_fetch_all($dbquery, MYSQLI_ASSOC);
+		echo json_encode($result);
 		mysqli_close($con);
 	}
 	

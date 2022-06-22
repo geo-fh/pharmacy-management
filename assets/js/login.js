@@ -1,23 +1,25 @@
-function validateLogin() {
-  var xhttp = new XMLHttpRequest();
-  var email = document.getElementById("InputEmail").value;
-  var password = document.getElementById("InputPassword").value;
+const loginForm = document.getElementById("loginForm");
+
+loginForm.addEventListener("submit", function(e) {
+  e.preventDefault();
   var usertype;
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      usertype = this.responseText;
-      if(usertype != 1 && usertype != 2 && usertype != 3) {
-        alert('Incorrect email or password.');
-      }
-      saveSession(email, usertype);
-    }
+  var details = {
+    'email': document.getElementById("InputEmail").value,
+    'password': document.getElementById("InputPassword").value
   };
-  xhttp.open("POST", "assets/php/login.php", true);
-  xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-  xhttp.send("email="+email+"&password="+password);
-}
+  postData("assets/php/login.php", prepareData(details))
+    .then(data => {
+      if(data.length == 0) {
+        alert('Incorrect email or password.');
+        return;
+      } else {
+        usertype = data[0].user_type;
+        console.log(usertype);
+        saveSession(usertype);
+      }
+    });
+})
 
 function saveSession(email, usertype) {
   document.cookie = "usertype=" + usertype;
-  document.cookie = "email=" + email;
 }
