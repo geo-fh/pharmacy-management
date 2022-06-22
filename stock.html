@@ -145,7 +145,7 @@
                                     <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
                                         <label class="form-label">Show&nbsp;
                                             <select id="selectedLimit" class="d-inline-block form-select form-select-sm"
-                                                onchange="populateStock()">
+                                                onchange="changeLimit();">
                                                 <option value="10" selected="">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
@@ -197,10 +197,10 @@
                                 <table class="table centertable">
                                     <thead>
                                         <tr>
-                                            <th onclick="sortColumn('batch_id', 0)">Batch ID</th>
-                                            <th onclick="sortColumn('medication_name', 1)">Medication</th>
-                                            <th onclick="sortColumn('quantity', 2)">Quantity</th>
-                                            <th onclick="sortColumn('expiration_date', 3)">Expiry Date</th>
+                                            <th onclick="sortColumn('batch_id')">Batch ID</th>
+                                            <th onclick="sortColumn('medication_name')">Medication</th>
+                                            <th onclick="sortColumn('quantity')">Quantity</th>
+                                            <th onclick="sortColumn('expiration_date')">Expiry Date</th>
                                             <th>Operations</th>
                                         </tr>
                                     </thead>
@@ -217,15 +217,7 @@
                                 <div class="col-md-6">
                                     <nav
                                         class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" aria-label="Previous"
-                                                    href="#"><span aria-hidden="true">«</span></a></li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
-                                                        aria-hidden="true">»</span></a></li>
-                                        </ul>
+                                        <ul class="pagination" id="stockPagination"></ul>
                                     </nav>
                                 </div>
                             </div>
