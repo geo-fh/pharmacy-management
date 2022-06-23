@@ -1,18 +1,55 @@
+var baseStock;
 var stock;
 var stringStock;
+var search;
 var stockProcessed = false;
-var baseStock;
 var currentPage = 1;
 var sortDirection = [0, 0, 0, 0]; // 0 is unset, 1 is ascending, 2 is descending
 var columns = ["batch_id", "medication_name", "quantity", "expiration_date"]
 var columnTypes = ["Number", "String", "Number", "Date"]
-var search;
 
 $(function () {
-    fetchStock();
     loadUser();
+    fetchStock();
     setNeutralArrows();
+    setEvents();
 })
+
+function setEvents() {
+    $(document).on("click", "#stockPagination > li.page-item", function () {
+        switch (this.id) {
+            case "previousPage":
+                if (currentPage > 1)
+                    currentPage--;
+                break;
+            case "nextPage":
+                if (currentPage < 5)
+                    currentPage++;
+                break;
+            default:
+                currentPage = this.id.substr(4);
+        }
+        displayStock();
+    })
+    
+    $(document).on("change", "#selectedLimit", function () {
+        currentPage = 1;
+        displayStock();
+    })
+    
+    $(document).on("click", ".tablesorter > thead > tr > th", function () {
+        if (this.id != "")
+            sortColumn(this.id);
+    })
+    
+    $(document).on("input", '#stockSearch', function (e) {
+        if (e.target.value == "")
+            stock = baseStock;
+        else
+            searchStock(e.target.value);
+        displayStock();
+    })
+}
 
 function fetchStock() {
     postData("assets/php/selectAllStock.php", "")
@@ -41,6 +78,44 @@ function populateStock(start, end) {
         r[++j] = "\" type=\"button\">Remove</button></div></td></tr>";
     }
     $("#stockList").html(r.join(""));
+}
+
+function updatePagination(currentPage) {
+    var limit = $("#selectedLimit option:selected").val();
+    var size = stock.length;
+    var pages = Math.ceil(size / limit);
+    var r = new Array(), j = -1;
+    r[++j] = "<li class=\"page-item\"";
+    if (currentPage == 1)
+        r[++j] = " hidden=\"true\"";
+    r[++j] = "id=\"previousPage\"><a class=\"page-link\" aria-label=\"Previous\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">«</span></a></li>";
+    for (var i = 1; i <= pages; i++) {
+        r[++j] = "<li class=\"page-item";
+        if (i == currentPage)
+            r[++j] = " active";
+        r[++j] = "\"id=\"page"
+        r[++j] = i;
+        r[++j] = "\"><a class=\"page-link\" href=\"javascript:void(0)\">";
+        r[++j] = i;
+        r[++j] = "</a></li>";
+    }
+    r[++j] = "<li class=\"page-item\""
+    if (currentPage == pages)
+        r[++j] = " hidden=\"true\"";
+    r[++j] = "id=\"nextPage\"><a class=\"page-link\" aria-label=\"Next\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">»</span></a></li>"
+    $("#stockPagination").html(r.join(""));
+}
+
+function displayStock() {
+    var limit = $("#selectedLimit option:selected").val();
+    var start = (currentPage - 1) * limit;
+    var end = Math.min(parseInt(start) + parseInt(limit), stock.length);
+    if (end > start)
+        $("#dataTable_info").html(`Showing ${start + 1} to ${end} of ${stock.length}`);
+    else
+        $("#dataTable_info").html("No results found");
+    populateStock(start, end);
+    updatePagination(currentPage);
 }
 
 function sortColumn(columnName) {
@@ -77,16 +152,7 @@ function sortColumn(columnName) {
         default:
             return;
     }
-    console.log(sortDirection);
     displayStock();
-}
-
-function getDate(date) {
-    let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    let day = date.getDate();
-    let month = months[date.getMonth()];
-    let year = date.getFullYear();
-    return `${day}-${month}-${year}`;
 }
 
 function resetSortDirection(index, dir) {
@@ -97,6 +163,12 @@ function resetSortDirection(index, dir) {
         sortDirection[index] = 2;
     }
     sortArrows();
+}
+
+function setNeutralArrows() {
+    for (var i = 0; i < 4; i++) {
+        $('#' + columns[i]).addClass("header");
+    }
 }
 
 function sortArrows() {
@@ -120,84 +192,6 @@ function sortArrows() {
     }
 }
 
-function updatePagination(currentPage) {
-    var limit = $("#selectedLimit option:selected").val();
-    var size = stock.length;
-    var pages = Math.ceil(size / limit);
-    var r = new Array(), j = -1;
-    r[++j] = "<li class=\"page-item\"";
-    if (currentPage == 1)
-        r[++j] = " hidden=\"true\"";
-    r[++j] = "id=\"previousPage\"><a class=\"page-link\" aria-label=\"Previous\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">«</span></a></li>";
-    for (var i = 1; i <= pages; i++) {
-        r[++j] = "<li class=\"page-item";
-        if (i == currentPage)
-            r[++j] = " active";
-        r[++j] = "\"id=\"page"
-        r[++j] = i;
-        r[++j] = "\"><a class=\"page-link\" href=\"javascript:void(0)\">";
-        r[++j] = i;
-        r[++j] = "</a></li>";
-    }
-    r[++j] = "<li class=\"page-item\""
-    if (currentPage == pages)
-        r[++j] = " hidden=\"true\"";
-    r[++j] = "id=\"nextPage\"><a class=\"page-link\" aria-label=\"Next\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">»</span></a></li>"
-    $("#stockPagination").html(r.join(""));
-}
-
-$(document).on("click", "#stockPagination > li.page-item", function () {
-    switch (this.id) {
-        case "previousPage":
-            if (currentPage > 1)
-                currentPage--;
-            break;
-        case "nextPage":
-            if (currentPage < 5)
-                currentPage++;
-            break;
-        default:
-            currentPage = this.id.substr(4);
-    }
-    displayStock();
-})
-
-$(document).on("click", ".tablesorter > thead > tr > th", function () {
-    if (this.id != "")
-        sortColumn(this.id);
-})
-
-function displayStock() {
-    var limit = $("#selectedLimit option:selected").val();
-    var start = (currentPage - 1) * limit;
-    var end = Math.min(parseInt(start) + parseInt(limit), stock.length);
-    if (end > start)
-        $("#dataTable_info").html(`Showing ${start + 1} to ${end} of ${stock.length}`);
-    else
-        $("#dataTable_info").html("No results found");
-    populateStock(start, end);
-    updatePagination(currentPage);
-}
-
-function changeLimit() {
-    currentPage = 1;
-    displayStock();
-}
-
-function setNeutralArrows() {
-    for (var i = 0; i < 4; i++) {
-        $('#' + columns[i]).addClass("header");
-    }
-}
-
-$('#stockSearch').on("input", function (e) {
-    if (e.target.value == "")
-        stock = baseStock;
-    else
-        searchStock(e.target.value);
-    displayStock();
-})
-
 function searchStock(text) {
     var index = 0;
     search = [];
@@ -220,6 +214,7 @@ function stringifyStock() {
         for (column in columns) {
             string += stock[key][columns[column]]
             if (columns[column] == "expiration_date")
+                string += " ";
                 string += getDate(new Date(stock[key][columns[column]]));
             if (column < 3)
                 string += " ";
