@@ -42,9 +42,9 @@ function populateStock(start, end) {
 function sortColumn(columnName) {
     var index = columns.indexOf(columnName);
     var type = columnTypes[index]
-    switch(type) {
+    switch (type) {
         case 'Number':
-            if(sortDirection[index] != 1) {
+            if (sortDirection[index] != 1) {
                 stock.sort((a, b) => parseInt(a[columnName]) - parseInt(b[columnName]));
                 resetSortDirection(index, 1);
             } else {
@@ -96,18 +96,19 @@ function resetSortDirection(index, dir) {
 }
 
 function sortArrows() {
-    for(var i = 0; i < sortDirection.length; i++) {
-        switch(sortDirection[i]) {
+    for (var i = 0; i < sortDirection.length; i++) {
+        switch (sortDirection[i]) {
             case 0:
-                $('#' +columns[i]).removeClass("headerSortUp", "headerSortDown");
+                $('#' + columns[i]).removeClass("headerSortUp");
+                $('#' + columns[i]).removeClass("headerSortDown");
                 break;
             case 1:
-                $('#' +columns[i]).addClass("headerSortUp");
-                $('#' +columns[i]).removeClass("headerSortDown");
+                $('#' + columns[i]).addClass("headerSortUp");
+                $('#' + columns[i]).removeClass("headerSortDown");
                 break;
             case 2:
-                $('#' +columns[i]).addClass("headerSortDown");
-                $('#' +columns[i]).removeClass("headerSortUp");
+                $('#' + columns[i]).addClass("headerSortDown");
+                $('#' + columns[i]).removeClass("headerSortUp");
                 break;
             default:
                 return;
@@ -121,12 +122,12 @@ function updatePagination(currentPage) {
     var pages = Math.ceil(size / limit);
     var r = new Array(), j = -1;
     r[++j] = "<li class=\"page-item\"";
-    if(currentPage == 1)
+    if (currentPage == 1)
         r[++j] = " hidden=\"true\"";
     r[++j] = "id=\"previousPage\"><a class=\"page-link\" aria-label=\"Previous\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">«</span></a></li>";
     for (var i = 1; i <= pages; i++) {
         r[++j] = "<li class=\"page-item";
-        if(i == currentPage)
+        if (i == currentPage)
             r[++j] = " active";
         r[++j] = "\"id=\"page"
         r[++j] = i;
@@ -135,20 +136,20 @@ function updatePagination(currentPage) {
         r[++j] = "</a></li>";
     }
     r[++j] = "<li class=\"page-item\""
-    if(currentPage == pages)
+    if (currentPage == pages)
         r[++j] = " hidden=\"true\"";
     r[++j] = "id=\"nextPage\"><a class=\"page-link\" aria-label=\"Next\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">»</span></a></li>"
     $("#stockPagination").html(r.join(""));
 }
 
-$(document).on("click", "#stockPagination > li.page-item", function() {
-    switch(this.id) {
+$(document).on("click", "#stockPagination > li.page-item", function () {
+    switch (this.id) {
         case "previousPage":
-            if(currentPage > 1)
+            if (currentPage > 1)
                 currentPage--;
             break;
         case "nextPage":
-            if(currentPage < 5)
+            if (currentPage < 5)
                 currentPage++;
             break;
         default:
@@ -157,16 +158,16 @@ $(document).on("click", "#stockPagination > li.page-item", function() {
     displayStock();
 })
 
-$(document).on("click", ".tablesorter > thead > tr > th", function() {
-    if(this.id != "")
+$(document).on("click", ".tablesorter > thead > tr > th", function () {
+    if (this.id != "")
         sortColumn(this.id);
 })
 
 function displayStock() {
     var limit = $("#selectedLimit option:selected").val();
-    var start = (currentPage-1)*limit;
+    var start = (currentPage - 1) * limit;
     var end = Math.min(parseInt(start) + parseInt(limit), stock.length);
-    $("#dataTable_info").html(`Showing ${start+1} to ${end} of ${stock.length}`);
+    $("#dataTable_info").html(`Showing ${start + 1} to ${end} of ${stock.length}`);
     populateStock(start, end);
     updatePagination(currentPage);
 }
@@ -177,7 +178,7 @@ function changeLimit() {
 }
 
 function setNeutralArrows() {
-    for(var i = 0; i < 4; i++) {
-        $('#' +columns[i]).addClass("header");
+    for (var i = 0; i < 4; i++) {
+        $('#' + columns[i]).addClass("header");
     }
 }
