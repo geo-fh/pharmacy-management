@@ -1,15 +1,18 @@
 var stock;
 var baseStock;
 var currentPage = 1;
-var sortDirection = [false, false, false, false];
+var sortDirection = [0, 0, 0, 0]; // 0 is unset, 1 is ascending, 2 is descending
+var columns = ["batch_id", "medication_name", "quantity", "expiration_date"]
+var columnTypes = ["Number", "String", "Number", "Date"]
 
 $(function () {
     fetchStock();
     loadUser();
+    setNeutralArrows();
 })
 
 function fetchStock() {
-    postData("assets/php/selectAllStock.php", '')
+    postData("assets/php/selectAllStock.php", "")
         .then(data => {
             stock = baseStock = data;
             displayStock();
@@ -18,7 +21,6 @@ function fetchStock() {
 
 function populateStock(start, end) {
     var r = new Array(), j = -1;
-    console.log(start + " " + end);
     for (var i = start; i < end; i++) {
         r[++j] = "<tr><td>";
         r[++j] = stock[i].batch_id;
@@ -34,46 +36,38 @@ function populateStock(start, end) {
         r[++j] = stock[i].batch_id;
         r[++j] = "\" type=\"button\">Remove</button></div></td></tr>";
     }
-    $('#stockList').html(r.join(''));
-    // document.getElementById('dataTable_info').innerText = "Showing " + ;
+    $("#stockList").html(r.join(""));
 }
 
 function sortColumn(columnName) {
-    switch (columnName) {
-        case 'batch_id':
-            if (sortDirection[0]) {
-                stock.sort((a, b) => parseInt(b.batch_id) - parseInt(a.batch_id));
-                resetSortDirection(-1);
+    var index = columns.indexOf(columnName);
+    var type = columnTypes[index]
+    switch(type) {
+        case 'Number':
+            if(sortDirection[index] != 1) {
+                stock.sort((a, b) => parseInt(a[columnName]) - parseInt(b[columnName]));
+                resetSortDirection(index, 1);
             } else {
-                stock.sort((a, b) => parseInt(a.batch_id) - parseInt(b.batch_id));
-                resetSortDirection(0);
+                stock.sort((a, b) => parseInt(b[columnName]) - parseInt(a[columnName]));
+                resetSortDirection(index, 2);
             }
             break;
-        case 'medication_name':
-            if (sortDirection[1]) {
-                stock.sort((a, b) => b.medication_name.localeCompare(a.medication_name));
-                resetSortDirection(-1);
+        case 'String':
+            if (sortDirection[index] != 1) {
+                stock.sort((a, b) => a[columnName].localeCompare(b[columnName]));
+                resetSortDirection(index, 1);
             } else {
-                stock.sort((a, b) => a.medication_name.localeCompare(b.medication_name));
-                resetSortDirection(1);
+                stock.sort((a, b) => b[columnName].localeCompare(a[columnName]));
+                resetSortDirection(index, 2);
             }
             break;
-        case 'quantity':
-            if (sortDirection[2]) {
-                stock.sort((a, b) => parseInt(b.quantity) - parseInt(a.quantity));
-                resetSortDirection(-1);
+        case 'Date':
+            if (sortDirection[index] != 1) {
+                stock.sort((a, b) => (new Date(a[columnName])).getTime() - (new Date(b[columnName])).getTime());
+                resetSortDirection(index, 1);
             } else {
-                stock.sort((a, b) => parseInt(a.quantity) - parseInt(b.quantity));
-                resetSortDirection(2);
-            }
-            break;
-        case 'expiration_date':
-            if (sortDirection[3]) {
-                stock.sort((a, b) => (new Date(b.expiration_date)).getTime() - (new Date(a.expiration_date)).getTime());
-                resetSortDirection(-1);
-            } else {
-                stock.sort((a, b) => (new Date(a.expiration_date)).getTime() - (new Date(b.expiration_date)).getTime());
-                resetSortDirection(3);
+                stock.sort((a, b) => (new Date(b[columnName])).getTime() - (new Date(a[columnName])).getTime());
+                resetSortDirection(index, 2);
             }
             break;
         default:
@@ -91,15 +85,38 @@ function getDate(date) {
     return `${day}-${month}-${year}`;
 }
 
-function resetSortDirection(index) {
-    sortDirection = [false, false, false, false];
-    if (index != -1) {
-        sortDirection[index] = true;
+function resetSortDirection(index, dir) {
+    sortDirection = [0, 0, 0, 0];
+    if (dir == 1) {
+        sortDirection[index] = 1;
+    } else if (dir == 2) {
+        sortDirection[index] = 2;
+    }
+    sortArrows();
+}
+
+function sortArrows() {
+    for(var i = 0; i < sortDirection.length; i++) {
+        switch(sortDirection[i]) {
+            case 0:
+                $('#' +columns[i]).removeClass("headerSortUp", "headerSortDown");
+                break;
+            case 1:
+                $('#' +columns[i]).addClass("headerSortUp");
+                $('#' +columns[i]).removeClass("headerSortDown");
+                break;
+            case 2:
+                $('#' +columns[i]).addClass("headerSortDown");
+                $('#' +columns[i]).removeClass("headerSortUp");
+                break;
+            default:
+                return;
+        }
     }
 }
 
 function updatePagination(currentPage) {
-    var limit = $('#selectedLimit option:selected').val();
+    var limit = $("#selectedLimit option:selected").val();
     var size = stock.length;
     var pages = Math.ceil(size / limit);
     var r = new Array(), j = -1;
@@ -121,11 +138,10 @@ function updatePagination(currentPage) {
     if(currentPage == pages)
         r[++j] = " hidden=\"true\"";
     r[++j] = "id=\"nextPage\"><a class=\"page-link\" aria-label=\"Next\" href=\"javascript:void(0)\"><span aria-hidden=\"true\">»</span></a></li>"
-    $('#stockPagination').html(r.join(''));
+    $("#stockPagination").html(r.join(""));
 }
 
 $(document).on("click", "#stockPagination > li.page-item", function() {
-    console.log(currentPage)
     switch(this.id) {
         case "previousPage":
             if(currentPage > 1)
@@ -141,10 +157,16 @@ $(document).on("click", "#stockPagination > li.page-item", function() {
     displayStock();
 })
 
+$(document).on("click", ".tablesorter > thead > tr > th", function() {
+    if(this.id != "")
+        sortColumn(this.id);
+})
+
 function displayStock() {
-    var limit = $('#selectedLimit option:selected').val();
+    var limit = $("#selectedLimit option:selected").val();
     var start = (currentPage-1)*limit;
-    var end = parseInt(start) + parseInt(limit);
+    var end = Math.min(parseInt(start) + parseInt(limit), stock.length);
+    $("#dataTable_info").html(`Showing ${start+1} to ${end} of ${stock.length}`);
     populateStock(start, end);
     updatePagination(currentPage);
 }
@@ -152,4 +174,10 @@ function displayStock() {
 function changeLimit() {
     currentPage = 1;
     displayStock();
+}
+
+function setNeutralArrows() {
+    for(var i = 0; i < 4; i++) {
+        $('#' +columns[i]).addClass("header");
+    }
 }

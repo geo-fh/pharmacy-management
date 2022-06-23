@@ -194,13 +194,13 @@
                                 </div>
                             </div>
                             <div class="table-responsive text-center">
-                                <table class="table centertable">
+                                <table class="table centertable tablesorter">
                                     <thead>
                                         <tr>
-                                            <th onclick="sortColumn('batch_id')">Batch ID</th>
-                                            <th onclick="sortColumn('medication_name')">Medication</th>
-                                            <th onclick="sortColumn('quantity')">Quantity</th>
-                                            <th onclick="sortColumn('expiration_date')">Expiry Date</th>
+                                            <th id="batch_id">Batch ID</th>
+                                            <th id="medication_name">Medication</th>
+                                            <th id="quantity">Quantity</th>
+                                            <th id="expiration_date">Expiry Date</th>
                                             <th>Operations</th>
                                         </tr>
                                     </thead>
@@ -211,8 +211,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 align-self-center">
-                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
-                                        Showing 1 to 2 of 2</p>
+                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite"></p>
                                 </div>
                                 <div class="col-md-6">
                                     <nav
