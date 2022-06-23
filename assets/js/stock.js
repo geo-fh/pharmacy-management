@@ -1,9 +1,12 @@
 var stock;
+var stringStock;
+var stockProcessed = false;
 var baseStock;
 var currentPage = 1;
 var sortDirection = [0, 0, 0, 0]; // 0 is unset, 1 is ascending, 2 is descending
 var columns = ["batch_id", "medication_name", "quantity", "expiration_date"]
 var columnTypes = ["Number", "String", "Number", "Date"]
+var search;
 
 $(function () {
     fetchStock();
@@ -14,7 +17,8 @@ $(function () {
 function fetchStock() {
     postData("assets/php/selectAllStock.php", "")
         .then(data => {
-            stock = baseStock = data;
+            baseStock = data;
+            stock = baseStock;
             displayStock();
         });
 }
@@ -167,7 +171,10 @@ function displayStock() {
     var limit = $("#selectedLimit option:selected").val();
     var start = (currentPage - 1) * limit;
     var end = Math.min(parseInt(start) + parseInt(limit), stock.length);
-    $("#dataTable_info").html(`Showing ${start + 1} to ${end} of ${stock.length}`);
+    if (end > start)
+        $("#dataTable_info").html(`Showing ${start + 1} to ${end} of ${stock.length}`);
+    else
+        $("#dataTable_info").html("No results found");
     populateStock(start, end);
     updatePagination(currentPage);
 }
@@ -181,4 +188,43 @@ function setNeutralArrows() {
     for (var i = 0; i < 4; i++) {
         $('#' + columns[i]).addClass("header");
     }
+}
+
+$('#stockSearch').on("input", function (e) {
+    if (e.target.value == "")
+        stock = baseStock;
+    else
+        searchStock(e.target.value);
+    displayStock();
+})
+
+function searchStock(text) {
+    var index = 0;
+    search = [];
+    if (!stockProcessed)
+        stringifyStock();
+    for (key in stringStock) {
+        var string = stringStock[key].toLowerCase();
+        if (string.includes(text.toLowerCase())) {
+            search[index] = baseStock[key];
+            index++;
+        }
+    }
+    stock = search;
+}
+
+function stringifyStock() {
+    stringStock = [];
+    for (key in stock) {
+        var string = "";
+        for (column in columns) {
+            string += stock[key][columns[column]]
+            if (columns[column] == "expiration_date")
+                string += getDate(new Date(stock[key][columns[column]]));
+            if (column < 3)
+                string += " ";
+        }
+        stringStock[key] = string;
+    }
+    stockProcessed = true;
 }
