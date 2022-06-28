@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="assets/css/Portfolio-with-Category-switcher.css">
     <link rel="stylesheet" href="assets/css/Testimonials.css">
     <link rel="stylesheet" href="assets/css/untitled.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 </head>
 
 <body id="page-top">
@@ -26,28 +27,7 @@
                     <div class="sidebar-brand-text mx-3"><span>Pharmacy</span></div>
                 </a>
                 <hr class="sidebar-divider my-0">
-                <ul class="navbar-nav text-light" id="accordionSidebar">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i
-                                class="fas fa-home"></i><span>Home</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="dashboard.html"><i
-                                class="far fa-chart-bar"></i><span>Statistics</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="profile.html"><i
-                                class="fas fa-user"></i><span>Profile</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="purchasehistory.html"><i
-                                class="fas fa-receipt"></i><span>Purchase History</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="patientsummary.html"><i
-                                class="fas fa-user-circle"></i><span>Patient Summary</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="patientcare.html"><i
-                                class="fas fa-user-circle"></i><span>Patient Care</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="productlist.html"><i
-                                class="fas fa-bullseye"></i><span>Products</span></a></li>
-                    <li class="nav-item"><a class="nav-link active" href="stock.html"><i
-                                class="fas fa-bullseye"></i><span>Stock</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="transactionlog.html"><i
-                                class="fas fa-receipt"></i><span>Transaction Log</span></a></li>
-                    <li class="nav-item"><a class="nav-link" href="usermanagement.html"><i
-                                class="fas fa-users"></i><span>User Management</span></a></li>
-                </ul>
+                <ul class="navbar-nav text-light" id="accordionSidebar"></ul>
                 <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0"
                         id="sidebarToggle" type="button"></button></div>
             </div>
@@ -144,8 +124,8 @@
                                 <div class="col-md-6 text-nowrap">
                                     <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable">
                                         <label class="form-label">Show&nbsp;
-                                            <select id="selectedLimit" class="d-inline-block form-select form-select-sm"
-                                                onchange="changeLimit();">
+                                            <select id="selectedLimit"
+                                                class="d-inline-block form-select form-select-sm">
                                                 <option value="10" selected="">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
@@ -168,20 +148,21 @@
                                                 <div class="modal-body">
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Medication:&nbsp;</span></div>
-                                                        <div class="col"><input type="search"></div>
+                                                        <div class="col"><select id="medSearch"></select></div>
                                                     </div>
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Quantity:&nbsp;</span></div>
-                                                        <div class="col"><input type="number"></div>
+                                                        <div class="col"><input id="atsQuantity" type="number"></div>
                                                     </div>
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Expiry Date:</span></div>
-                                                        <div class="col"><input type="date"></div>
+                                                        <div class="col"><input id="atsExpiry" type="date"></div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer"><button class="btn btn-light" type="button"
-                                                        data-bs-dismiss="modal">Cancel</button><button
-                                                        class="btn btn-primary" type="button">Add</button></div>
+                                                <div class="modal-footer"><button id="atsCancel" class="btn btn-light"
+                                                        type="button" data-bs-dismiss="modal">Cancel</button><button
+                                                        id="atsBtn" class="btn btn-primary" type="button">Add</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -204,9 +185,7 @@
                                             <th>Operations</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="stockList">
-                                        <!-- This gets filled by JavaScript -->
-                                    </tbody>
+                                    <tbody id="stockList"></tbody>
                                 </table>
                             </div>
                             <div class="row">
@@ -239,6 +218,7 @@
     <script src="assets/js/Portfolio-with-Category-switcher.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="assets/js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="assets/js/database.js"></script>
     <script src="assets/js/stock.js"></script>
 </body>

@@ -1,18 +1,19 @@
-var baseStock;
-var stock;
-var stringStock;
+var baseStock, stock, stringStock;
+var medicationList;
 var search;
 var stockProcessed = false;
 var currentPage = 1;
 var sortDirection = [0, 0, 0, 0]; // 0 is unset, 1 is ascending, 2 is descending
-var columns = ["batch_id", "medication_name", "quantity", "expiration_date"]
-var columnTypes = ["Number", "String", "Number", "Date"]
+var columns = ["batch_id", "medication_name", "quantity", "expiration_date"];
+var columnTypes = ["Number", "String", "Number", "Date"];
 
 $(function () {
+    fetchMedicationList();
     loadUser();
     fetchStock();
     setNeutralArrows();
     setEvents();
+    $("#stockPage").addClass("active")
 })
 
 function setEvents() {
@@ -42,12 +43,33 @@ function setEvents() {
             sortColumn(this.id);
     })
     
-    $(document).on("input", '#stockSearch', function (e) {
+    $(document).on("input", "#stockSearch", function (e) {
         if (e.target.value == "")
             stock = baseStock;
         else
             searchStock(e.target.value);
         displayStock();
+    })
+
+    $("#medSearch").select2({
+        dropdownParent: $("#modal-1")
+    });
+
+    $(document).on("click", "#atsBtn", function() {
+        var medication_id = $("option:selected", "#medSearch")[0].value;
+        var quantity = $("#atsQuantity").val();
+        var expiration_date = $("#atsExpiry").val();
+        if(medication_id > 0 && quantity > 0 && (new Date() - new Date(expiration_date)) < 0) {
+            insertBatch(medication_id, quantity, expiration_date);
+        } else {
+            showToast("failure");
+        }
+    })
+
+    $(document).on("click", "#atsCancel", function() {
+        populateMeds();
+        $("#atsQuantity").val("");
+        $("#atsExpiry").val("");
     })
 }
 
@@ -58,6 +80,14 @@ function fetchStock() {
             stock = baseStock;
             displayStock();
         });
+}
+
+function fetchMedicationList() {
+    postData("assets/php/selectMedStock.php", "")
+        .then(data => {
+            medicationList = data;
+            populateMeds();
+        })
 }
 
 function populateStock(start, end) {
@@ -213,13 +243,42 @@ function stringifyStock() {
         var string = "";
         for (column in columns) {
             string += stock[key][columns[column]]
-            if (columns[column] == "expiration_date")
+            if (columns[column] == "expiration_date") {
                 string += " ";
                 string += getDate(new Date(stock[key][columns[column]]));
+            }
             if (column < 3)
                 string += " ";
         }
         stringStock[key] = string;
     }
     stockProcessed = true;
+}
+
+function populateMeds() {
+    var r = new Array(), j = -1;
+    r[++j] = "<option selected value=\"0\">Select a Medication</option>";
+    for (var i = 0; i < medicationList.length; i++) {
+        r[++j] = "<option value=\"";
+        r[++j] = medicationList[i].medication_id;
+        r[++j] = "\">";
+        r[++j] = medicationList[i].medication_name;
+        r[++j] = "</option>";
+    }
+    $("#medSearch").html(r.join(""));
+}
+
+function insertBatch(medication_id, quantity, expiration_date) {
+    var details = {
+        'medication_id': medication_id,
+        'quantity': quantity,
+        'expiration_date': expiration_date
+    };
+    postData("assets/php/insertIntoStock.php", prepareData(details))
+        .then(data => {
+            if(data != "Error") {
+                $("#modal-1").modal('toggle');
+                location.reload();
+            }
+        });
 }
