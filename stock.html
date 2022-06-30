@@ -166,6 +166,57 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="modal fade" role="dialog" tabindex="-1" id="modal-2"
+                                        style="text-align: center;">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title" id="modalTitle">Edit Batch</h4><button type="button"
+                                                        class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row" style="margin-bottom: 20px;">
+                                                        <div class="col"><span>Medication:&nbsp;</span></div>
+                                                        <div class="col"><input disabled="true" id="editName" type="text"></div>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom: 20px;">
+                                                        <div class="col"><span>Quantity:&nbsp;</span></div>
+                                                        <div class="col"><input id="editQuantity" type="number"></div>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom: 20px;">
+                                                        <div class="col"><span>Expiry Date:</span></div>
+                                                        <div class="col"><input id="editExpiry" type="date"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer"><button class="btn btn-light"
+                                                        type="button" data-bs-dismiss="modal">Cancel</button><button
+                                                        id="editBtn" class="btn btn-primary" type="button">Edit</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" role="dialog" tabindex="-1" id="modal-3"
+                                        style="text-align: center;">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 class="modal-title">Remove Batch</h4><button type="button"
+                                                        class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row" style="margin-bottom: 20px;">
+                                                        <div class="col"><span>Are you sure you want to remove batch </span><span id="remBatchNo"></span></div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer"><button class="btn btn-light"
+                                                        type="button" data-bs-dismiss="modal">No</button><button
+                                                        id="remBtn" class="btn btn-primary" type="button">Yes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-md-6 col-xxl-2">
                                     <div class="text-md-end dataTables_filter" id="dataTable_filter"><label

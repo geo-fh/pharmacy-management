@@ -6,6 +6,8 @@ var currentPage = 1;
 var sortDirection = [0, 0, 0, 0]; // 0 is unset, 1 is ascending, 2 is descending
 var columns = ["batch_id", "medication_name", "quantity", "expiration_date"];
 var columnTypes = ["Number", "String", "Number", "Date"];
+var batch_index = -1;
+var rem_batch_index = -1;
 
 $(function () {
     fetchMedicationList();
@@ -71,6 +73,29 @@ function setEvents() {
         $("#atsQuantity").val("");
         $("#atsExpiry").val("");
     })
+
+    $(document).on("click", ".batchEdit", function() {
+        var batch_id = $(this).parentsUntil("tbody").children("td")[0].firstChild.data;
+        displayEditModal(batch_id);
+    })
+
+    $(document).on("click", ".batchRem", function() {
+        var batch_id = $(this).parentsUntil("tbody").children("td")[0].firstChild.data;
+        rem_batch_index = batch_id;
+        $("#modal-3").modal('toggle');
+        $("#remBatchNo").text(batch_id + "?");
+    })
+
+    $(document).on("click", "#remBtn", function() {
+        removeBatch(rem_batch_index);
+    })
+
+    $(document).on("click", "#editBtn", function() {
+        var batch_id = stock[batch_index].batch_id;
+        var quantity = $("#editQuantity").val();
+        var expiration_date = $("#editExpiry").val();
+        editBatch(batch_id, quantity, expiration_date);
+    })
 }
 
 function fetchStock() {
@@ -101,9 +126,9 @@ function populateStock(start, end) {
         r[++j] = stock[i].quantity;
         r[++j] = "</td><td>";
         r[++j] = getDate(new Date(stock[i].expiration_date));
-        r[++j] = "</td><td><div class=\"btn-group\" role=\"group\"><button class=\"btn btn-primary\" id=\"editbatch";
+        r[++j] = "</td><td><div class=\"btn-group\" role=\"group\"><button class=\"btn btn-primary batchEdit\" id=\"editbatch";
         r[++j] = stock[i].batch_id;
-        r[++j] = "\" type=\"button\">Edit</button><button class=\"btn btn-primary\" id=\"removebatch";
+        r[++j] = "\" type=\"button\">Edit</button><button class=\"btn btn-primary batchRem\" id=\"removebatch";
         r[++j] = stock[i].batch_id;
         r[++j] = "\" type=\"button\">Remove</button></div></td></tr>";
     }
@@ -278,6 +303,42 @@ function insertBatch(medication_id, quantity, expiration_date) {
         .then(data => {
             if(data != "Error") {
                 $("#modal-1").modal('toggle');
+                location.reload();
+            }
+        });
+}
+
+function displayEditModal(batch_id) {
+    batch_index = stock.findIndex(x => x.batch_id === batch_id);
+    $("#modalTitle").text("Edit Batch " + batch_id);
+    $("#editName").val(stock[batch_index].medication_name);
+    $("#editQuantity").val(stock[batch_index].quantity);
+    $("#editExpiry").val(stock[batch_index].expiration_date);
+    $("#modal-2").modal("toggle");
+}
+
+function editBatch(batch_id, quantity, expiration_date) {
+    var details = {
+        'batch_id': batch_id,
+        'quantity': quantity,
+        'expiration_date': expiration_date
+    };
+    postData("assets/php/editBatch.php", prepareData(details))
+        .then(data => {
+            if(data != "Error") {
+                $("#modal-2").modal('toggle');
+                location.reload();
+            }
+        });
+}
+
+function removeBatch(batch_id) {
+    var details = {
+        'batch_id': batch_id
+    };
+    postData("assets/php/removeBatch.php", prepareData(details))
+        .then(data => {
+            if(data != "Error") {
                 location.reload();
             }
         });

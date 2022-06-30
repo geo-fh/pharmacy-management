@@ -15,7 +15,7 @@ if (
 	if ($con->query($query) === true) {
 		echo mysqli_insert_id($con);
     } else {
-        echo "Error";
+        echo json_encode("Error");
     }
     mysqli_close($con);
 }
