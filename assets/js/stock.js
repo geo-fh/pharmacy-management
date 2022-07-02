@@ -15,7 +15,6 @@ $(function () {
     fetchStock();
     setNeutralArrows();
     setEvents();
-    $("#stockPage").addClass("active")
 })
 
 function setEvents() {

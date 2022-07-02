@@ -1,11 +1,9 @@
-const loginForm = document.getElementById("loginForm");
-
-loginForm.addEventListener("submit", function (e) {
+$("#loginForm").on("submit", function (e) {
   e.preventDefault();
   var usertype;
   var details = {
-    'email': document.getElementById("InputEmail").value,
-    'password': document.getElementById("InputPassword").value
+    'email': $("#InputEmail").val(),
+    'password': $("#InputPassword").val()
   };
   postData("assets/php/login.php", prepareData(details))
     .then(data => {
