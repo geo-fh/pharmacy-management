@@ -1,11 +1,12 @@
 var patientEmails;
 var selectedPatient = -1;
 var medicationList;
-var transactionCart;
+var transactionCart = [];
 
 $(function () {
     setEvents();
     fetchMedicationList();
+    fillTransaction();
 })
 
 function setEvents() {
@@ -14,7 +15,7 @@ function setEvents() {
     })
 
     $(document).on("change", "#patientEmails", function () {
-        selectedPatient = this.selectedIndex-1;
+        selectedPatient = this.selectedIndex - 1;
         fillInfo();
     })
 
@@ -28,7 +29,7 @@ function setEvents() {
         var start_date = $("#presStart").val();
         var end_date = $("#presEnd").val();
         var usage_directions = $("#usageDirections").val();
-        if(new Date(end_date) - new Date(start_date) > 0)
+        if (new Date(end_date) - new Date(start_date) > 0)
             insertPrescription(medication_id, quantity, start_date, end_date, usage_directions);
     })
 
@@ -39,7 +40,7 @@ function setEvents() {
 
 function fetchPatientEmails() {
     var email = $("#inputEmail").val();
-    if(email != "") {
+    if (email != "") {
         var details = {
             'email': $("#inputEmail").val(),
         };
@@ -65,7 +66,7 @@ function populatePatientEmails() {
 }
 
 function fillInfo() {
-    if(selectedPatient > -1) {
+    if (selectedPatient > -1) {
         $("#patientInfoFName").text(patientEmails[selectedPatient].first_name);
         $("#patientInfoLName").text(patientEmails[selectedPatient].last_name);
         $("#patientInfoMobile").text(patientEmails[selectedPatient].mobile_number);
@@ -97,6 +98,13 @@ function populateMeds() {
         r[++j] = "</option>";
     }
     $("#medSearch").html(r.join(""));
+    for (var i = 0; i < transactionCart.length + 1; i++) {
+        $("#transMed" + (i + 1)).html(r.join(""));
+        $("#transMed" + (i + 1)).select2({
+            dropdownParent: $("#modal-2")
+        });
+
+    }
 }
 
 function insertPrescription(medication_id, quantity, start_date, end_date, usage_directions) {
@@ -110,7 +118,7 @@ function insertPrescription(medication_id, quantity, start_date, end_date, usage
     };
     postData("assets/php/insertPrescription.php", prepareData(details))
         .then(data => {
-            if(data != "Error") {
+            if (data != "Error") {
                 $("#modal-1").modal('toggle');
                 clearModal1();
             }
@@ -123,4 +131,21 @@ function clearModal1() {
     $("#presStart").val("");
     $("#presEnd").val("");
     $("#usageDirections").val("");
+}
+
+function fillTransaction() {
+    var r = new Array(), j = -1;
+    for (var i = 0; i < transactionCart.length + 1; i++) {
+        r[++j] = "<div class=\"row\" style=\"margin-bottom: 20px\"><div class=\"col\"><p class=\"d-xxl-flex justify-content-xxl-center\">Medication ";
+        r[++j] = i + 1;
+        r[++j] = "<button id=\"removeTrans";
+        r[++j] = i + 1;
+        r[++j] = "\" class=\"btn-sm btn-close\" type=\"button\"></button></p><div class=\"row\" style=\"margin-bottom: 20px;\"><div class=\"col\"><span>Medication:&nbsp;</span></div><div class=\"col\">";
+        r[++j] = "<select id=\"transMed";
+        r[++j] = i + 1;
+        r[++j] = "\"></select></div></div><div class=\"row\" style=\"margin-bottom: 20px;\"><div class=\"col\"><span>Quantity:&nbsp;</span></div><div class=\"col\"><input id=\"transQuantity";
+        r[++j] = i + 1;
+        r[++j] = "\" type=\"number\"></div></div></div></div>";
+    }
+    $("#transModal").html(r.join(""));
 }
