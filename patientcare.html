@@ -177,9 +177,10 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col" style="margin-bottom: 50px;"><button class="btn btn-primary"
-                                                type="button" style="width: 50%;" data-bs-target="#modal-1"
-                                                data-bs-toggle="modal">Add Prescription</button>
+                                        <div class="col" style="margin-bottom: 50px;"><button
+                                                class="btn btn-primary pcOptions" type="button" style="width: 50%;"
+                                                data-bs-target="#modal-1" data-bs-toggle="modal" disabled>Add
+                                                Prescription</button>
                                             <div class="modal fade" role="dialog" tabindex="-1" id="modal-1"
                                                 style="text-align: center;">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -226,9 +227,10 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col" style="margin-bottom: 50px;"><button class="btn btn-primary"
-                                                type="button" style="width: 50%;" data-bs-target="#modal-2"
-                                                data-bs-toggle="modal">Record Transaction</button>
+                                        <div class="col" style="margin-bottom: 50px;"><button id="launchTransModal"
+                                                class="btn btn-primary pcOptions" type="button" style="width: 50%;"
+                                                data-bs-target="#modal-2" data-bs-toggle="modal" disabled>Record
+                                                Transaction</button>
                                             <div class="modal fade" role="dialog" tabindex="-1" id="modal-2"
                                                 style="text-align: center;">
                                                 <div class="modal-dialog modal-dialog-centered" role="document">
@@ -239,41 +241,8 @@
                                                                 aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <p class="d-xxl-flex justify-content-xxl-center">
-                                                                        Medication 1<button class="btn-sm btn-close"
-                                                                            type="button"></button></p>
-                                                                    <div class="row" style="margin-bottom: 20px;">
-                                                                        <div class="col"><span>Medication:&nbsp;</span>
-                                                                        </div>
-                                                                        <div class="col"><input type="search"></div>
-                                                                    </div>
-                                                                    <div class="row" style="margin-bottom: 20px;">
-                                                                        <div class="col"><span>Quantity:&nbsp;</span>
-                                                                        </div>
-                                                                        <div class="col"><input type="number"></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row">
-                                                                <div class="col">
-                                                                    <p class="d-xxl-flex justify-content-xxl-center">
-                                                                        Medication 2<button class="btn-sm btn-close"
-                                                                            type="button"></button>
-                                                                    </p>
-                                                                    <div class="row" style="margin-bottom: 20px;">
-                                                                        <div class="col"><span>Medication:&nbsp;</span>
-                                                                        </div>
-                                                                        <div class="col"><input type="search"></div>
-                                                                    </div>
-                                                                    <div class="row" style="margin-bottom: 20px;">
-                                                                        <div class="col"><span>Quantity:&nbsp;</span>
-                                                                        </div>
-                                                                        <div class="col"><input type="number"></div>
-                                                                    </div>
-                                                                </div>
-                                                            </div><button
+                                                            <div id="transModal"></div>
+                                                            <button id="addTransFieldBtn"
                                                                 class="btn btn-primary btn-sm text-center border rounded-circle"
                                                                 type="button"
                                                                 style="background: var(--bs-green);width: 30.3594px;font-weight: bold;border-color: var(--bs-green);">+</button>
@@ -288,22 +257,11 @@
                                                                                     <th>Subtotal</th>
                                                                                 </tr>
                                                                             </thead>
-                                                                            <tbody>
-                                                                                <tr>
-                                                                                    <td>Medication 1</td>
-                                                                                    <td>X</td>
-                                                                                    <td>xx$</td>
-                                                                                </tr>
-                                                                                <tr>
-                                                                                    <td>Medication 2</td>
-                                                                                    <td>Y</td>
-                                                                                    <td>yy$</td>
-                                                                                </tr>
-                                                                            </tbody>
+                                                                            <tbody id="transTable"></tbody>
                                                                             <tfoot>
                                                                                 <tr>
                                                                                     <th colspan="2">Total</th>
-                                                                                    <th>xxx$</th>
+                                                                                    <th id="totalPrice"></th>
                                                                                 </tr>
                                                                             </tfoot>
                                                                         </table>
@@ -311,22 +269,25 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="modal-footer"><button class="btn btn-light"
-                                                                type="button"
+                                                        <div class="modal-footer"><button id="cancelTrans"
+                                                                class="btn btn-light" type="button"
                                                                 data-bs-dismiss="modal">Cancel</button><button
-                                                                class="btn btn-primary" type="button">Add</button></div>
+                                                                id="addTransBtn" class="btn btn-primary"
+                                                                type="button">Add</button></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col" style="margin-bottom: 50px;"><button class="btn btn-primary"
-                                                type="button" style="width: 50%;">View Patient Summary</button></div>
+                                        <div class="col" style="margin-bottom: 50px;"><button
+                                                class="btn btn-primary pcOptions" type="button" style="width: 50%;"
+                                                disabled>View
+                                                Patient Summary</button></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col"><button class="btn btn-primary" type="button"
-                                                style="width: 50%;">View Purchase History</button></div>
+                                        <div class="col"><button class="btn btn-primary pcOptions" type="button"
+                                                style="width: 50%;" disabled>View Purchase History</button></div>
                                     </div>
                                 </div>
                             </div>

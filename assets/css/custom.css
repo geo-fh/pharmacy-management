@@ -10,6 +10,10 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 
+.tablesorter {
+  text-align: center;
+}
+
 table.tablesorter thead tr .header {
   background-image: url(../img/black-unsorted.gif);
   background-repeat: no-repeat;
@@ -24,6 +28,11 @@ table.tablesorter thead tr .headerSortDown {
 }
 
 div.modal-body > div.row > div.col select, input {
+  width: 15rem;
+  text-align: center;
+}
+
+.modalSelect {
   width: 15rem;
   text-align: center;
 }

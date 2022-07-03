@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="assets/css/Portfolio-with-Category-switcher.css">
     <link rel="stylesheet" href="assets/css/Testimonials.css">
     <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 </head>
 
 <body id="page-top">
@@ -125,13 +126,14 @@
                             <div class="row">
                                 <div class="col-md-6 text-nowrap">
                                     <div id="dataTable_length-1" class="dataTables_length" aria-controls="dataTable">
-                                        <label class="form-label">Show&nbsp;<select
+                                        <label class="form-label">Show&nbsp;<select id="selectedLimit"
                                                 class="d-inline-block form-select form-select-sm">
                                                 <option value="10" selected="">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
                                                 <option value="100">100</option>
-                                            </select>&nbsp;</label></div>
+                                            </select>&nbsp;</label>
+                                    </div>
                                 </div>
                                 <div class="col-xxl-4 d-xxl-flex justify-content-xxl-end"><button
                                         class="btn btn-primary" type="button" data-bs-target="#modal-1"
@@ -146,48 +148,21 @@
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <div class="row d-xxl-flex">
-                                                        <div class="col d-flex justify-content-center">
-                                                            <div class="text-center d-xxl-flex justify-content-center align-items-xxl-center"
-                                                                style="margin-bottom: 20px;"><span>Enter a patient
-                                                                    email:&nbsp;</span><input type="search"><button
-                                                                    class="btn btn-primary btn-sm text-center border rounded-circle d-xxl-flex justify-content-xxl-center align-items-xxl-center"
-                                                                    type="button"
-                                                                    style="background: var(--bs-red);border-color: var(--bs-red);width: 30.3594px;font-weight: bold;margin-left: 5px;max-width: 20px;max-height: 20px;">x</button>
-                                                            </div>
+                                                    <div style="margin-bottom: 20px;">
+                                                        <div class="col"><span>Search for a patient's
+                                                                email:&nbsp;</span></div>
+                                                        <div class="col"><input id="inputEmail" type="search"><button
+                                                                id="inputEmailButton" class="btn-sm btn-primary"
+                                                                type="button">Search</button></div>
+                                                    </div>
+                                                    <div style="margin-bottom: 20px;">
+                                                        <div class="col"><span>Select a patient's email:&nbsp;</span>
+                                                        </div>
+                                                        <div class="col"><select id="patientEmails"></select>
                                                         </div>
                                                     </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <p>Medication 1</p>
-                                                            <div class="row" style="margin-bottom: 20px;">
-                                                                <div class="col"><span>Medication:&nbsp;</span></div>
-                                                                <div class="col"><input type="search"></div>
-                                                            </div>
-                                                            <div class="row" style="margin-bottom: 20px;">
-                                                                <div class="col"><span>Quantity:&nbsp;</span></div>
-                                                                <div class="col"><input type="number"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col">
-                                                            <p class="d-xxl-flex justify-content-xxl-center">Medication
-                                                                2<button
-                                                                    class="btn btn-primary btn-sm text-center border rounded-circle d-xxl-flex justify-content-xxl-center align-items-xxl-center"
-                                                                    type="button"
-                                                                    style="background: var(--bs-red);border-color: var(--bs-red);width: 30.3594px;font-weight: bold;margin-left: 5px;max-height: 20px;max-width: 20px;">x</button>
-                                                            </p>
-                                                            <div class="row" style="margin-bottom: 20px;">
-                                                                <div class="col"><span>Medication:&nbsp;</span></div>
-                                                                <div class="col"><input type="search"></div>
-                                                            </div>
-                                                            <div class="row" style="margin-bottom: 20px;">
-                                                                <div class="col"><span>Quantity:&nbsp;</span></div>
-                                                                <div class="col"><input type="number"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div><button
+                                                    <div id="transModal"></div>
+                                                    <button id="addTransFieldBtn"
                                                         class="btn btn-primary btn-sm text-center border rounded-circle"
                                                         type="button"
                                                         style="background: var(--bs-green);width: 30.3594px;font-weight: bold;border-color: var(--bs-green);">+</button>
@@ -202,22 +177,11 @@
                                                                             <th>Subtotal</th>
                                                                         </tr>
                                                                     </thead>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>Medication 1</td>
-                                                                            <td>X</td>
-                                                                            <td>xx$</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>Medication 2</td>
-                                                                            <td>Y</td>
-                                                                            <td>yy$</td>
-                                                                        </tr>
-                                                                    </tbody>
+                                                                    <tbody id="transTable"></tbody>
                                                                     <tfoot>
                                                                         <tr>
                                                                             <th colspan="2">Total</th>
-                                                                            <th>xxx$</th>
+                                                                            <th id="totalPrice"></th>
                                                                         </tr>
                                                                     </tfoot>
                                                                 </table>
@@ -234,67 +198,24 @@
                                 </div>
                                 <div class="col-md-6 col-xxl-2">
                                     <div class="text-md-end dataTables_filter" id="dataTable_filter-1"><label
-                                            class="form-label" style="width: 100%;"><input type="search"
+                                            class="form-label" style="width: 100%;"><input id="logSearch" type="search"
                                                 class="form-control form-control-sm" aria-controls="dataTable"
                                                 placeholder="Search"></label></div>
                                 </div>
                             </div>
                             <div class="table-responsive table mt-2" id="dataTable" role="grid"
                                 aria-describedby="dataTable_info">
-                                <table class="table my-0" id="dataTable">
+                                <table class="table centertable tablesorter" id="dataTable">
                                     <thead>
                                         <tr class="text-center">
-                                            <th>Order ID</th>
-                                            <th>Customer Email</th>
-                                            <th>Contents</th>
-                                            <th>Date</th>
-                                            <th>Total</th>
+                                            <th id="order_id">Order ID</th>
+                                            <th id="email_address">Customer Email</th>
+                                            <th id="contents">Contents</th>
+                                            <th id="purchase_date">Date</th>
+                                            <th id="total_price">Total (LBP)</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr class="text-center">
-                                            <td>0001</td>
-                                            <td>example@email.com</td>
-                                            <td>Medication 1, Medication 2, Medication 3...</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>xx$</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0002</td>
-                                            <td>example@email.com<br></td>
-                                            <td>Medication 1, Medication 2, Medication 3...</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>xx$</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0003</td>
-                                            <td>example@email.com<br></td>
-                                            <td>Medication 1, Medication 2, Medication 3...</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>xx$</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0004</td>
-                                            <td>example@email.com<br></td>
-                                            <td>Medication 1, Medication 2, Medication 3...</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>xx$</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0005</td>
-                                            <td>example@email.com<br></td>
-                                            <td>Medication 1, Medication 2, Medication 3...</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>xx$</td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0006</td>
-                                            <td>example@email.com<br></td>
-                                            <td>Medication 1, Medication 2, Medication 3...</td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td>xx$</td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody id="transactionList"></tbody>
                                     <tfoot>
                                         <tr class="text-center">
                                             <td><strong>Order ID</strong></td>
@@ -308,21 +229,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 align-self-center">
-                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
-                                        Showing 1 to 6 of 6</p>
+                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite"></p>
                                 </div>
                                 <div class="col-md-6">
                                     <nav
                                         class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" aria-label="Previous"
-                                                    href="#"><span aria-hidden="true">«</span></a></li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
-                                                        aria-hidden="true">»</span></a></li>
-                                        </ul>
+                                        <ul class="pagination" id="logPagination"></ul>
                                     </nav>
                                 </div>
                             </div>
@@ -344,7 +256,9 @@
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script src="assets/js/Portfolio-with-Category-switcher.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="assets/js/shared.js"></script>
+    <script src="assets/js/transactionlog.js"></script>
     <script src="assets/js/theme.js"></script>
 </body>
 

@@ -1,7 +1,7 @@
 var patientEmails;
 var selectedPatient = -1;
 var medicationList;
-var transactionCart = [];
+var transactionCart = [{ transMed: 0, transQuantity: 1 }];
 
 $(function () {
     setEvents();
@@ -15,6 +15,7 @@ function setEvents() {
     })
 
     $(document).on("change", "#patientEmails", function () {
+        $(".pcOptions").removeAttr("disabled");
         selectedPatient = this.selectedIndex - 1;
         fillInfo();
     })
@@ -35,6 +36,42 @@ function setEvents() {
 
     $(document).on("click", "#cancelPresBtn", function () {
         clearModal1();
+    })
+
+    $(document).on("click", "#addTransFieldBtn", function () {
+        console.log(transactionCart)
+        saveTransCart(transactionCart.length);
+        if (transactionCart[transactionCart.length - 1].transMed > 0)
+            addTransField();
+    })
+
+    $(document).on("hidden.bs.modal", "#modal-2", function () {
+        transactionCart = [{ transMed: 0, transQuantity: 1 }];
+        $("#transTable").html("");
+        $("#totalPrice").html("");
+    })
+
+    $(document).on("click", "#launchTransModal", function () {
+        fillTransaction();
+        populateMeds();
+    })
+
+    $(document).on("click", ".btn-close", function () {
+        removeTransField(this.id.substring(11));
+    })
+
+    $(document).on("change", ".modal2Table", function () {
+        saveTransCart(transactionCart.length);
+        fillTransTable();
+        fillTotalPrice();
+    })
+
+    $(document).on("click", "#addTransBtn", function () {
+        var total = 0;
+        for (var i = 0; i < transactionCart.length; i++) {
+            total += medicationList[transactionCart[i].transMed - 1].price * $("#transQuantity" + i).val()
+        }
+        insertOrder(total);
     })
 }
 
@@ -98,11 +135,12 @@ function populateMeds() {
         r[++j] = "</option>";
     }
     $("#medSearch").html(r.join(""));
-    for (var i = 0; i < transactionCart.length + 1; i++) {
-        $("#transMed" + (i + 1)).html(r.join(""));
-        $("#transMed" + (i + 1)).select2({
-            dropdownParent: $("#modal-2")
-        });
+    for (var i = 0; i < transactionCart.length; i++) {
+        $("#transMed" + (i)).html(r.join(""));
+        fixTransDropdown(i);
+        $("#transMed" + i).val(transactionCart[i].transMed);
+        $("#transQuantity" + i).val(transactionCart[i].transQuantity);
+        fixTransDropdown(i);
 
     }
 }
@@ -135,17 +173,112 @@ function clearModal1() {
 
 function fillTransaction() {
     var r = new Array(), j = -1;
-    for (var i = 0; i < transactionCart.length + 1; i++) {
+    for (var i = 0; i < transactionCart.length; i++) {
         r[++j] = "<div class=\"row\" style=\"margin-bottom: 20px\"><div class=\"col\"><p class=\"d-xxl-flex justify-content-xxl-center\">Medication ";
         r[++j] = i + 1;
-        r[++j] = "<button id=\"removeTrans";
-        r[++j] = i + 1;
-        r[++j] = "\" class=\"btn-sm btn-close\" type=\"button\"></button></p><div class=\"row\" style=\"margin-bottom: 20px;\"><div class=\"col\"><span>Medication:&nbsp;</span></div><div class=\"col\">";
-        r[++j] = "<select id=\"transMed";
-        r[++j] = i + 1;
+        if (transactionCart.length > 1) {
+            r[++j] = "<button id=\"removeTrans";
+            r[++j] = i;
+            r[++j] = "\" class=\"btn-sm btn-close\" type=\"button\"></button>";
+        }
+        r[++j] = "</p><div class=\"row\" style=\"margin-bottom: 20px;\"><div class=\"col\"><span>Medication:&nbsp;</span></div><div class=\"col\">";
+        r[++j] = "<select class=\"modalSelect modal2Table\" id=\"transMed";
+        r[++j] = i;
         r[++j] = "\"></select></div></div><div class=\"row\" style=\"margin-bottom: 20px;\"><div class=\"col\"><span>Quantity:&nbsp;</span></div><div class=\"col\"><input id=\"transQuantity";
-        r[++j] = i + 1;
-        r[++j] = "\" type=\"number\"></div></div></div></div>";
+        r[++j] = i;
+        r[++j] = "\" class=\"modal2Table\" type=\"number\" min=\"1\"></div></div></div></div>";
     }
     $("#transModal").html(r.join(""));
+}
+
+function addTransField() {
+    saveTransCart(transactionCart.length + 1);
+    fillTransaction();
+    populateMeds();
+    fillTransTable()
+}
+
+function removeTransField(index) {
+    saveTransCart(transactionCart.length);
+    transactionCart.splice(index, 1);
+    fillTransaction();
+    populateMeds();
+    fillTransTable()
+}
+
+function fixTransDropdown(index) {
+    $("#transMed" + (index)).select2({
+        dropdownParent: $("#modal-2 .modal-body")
+    });
+}
+
+function saveTransCart(length) {
+    for (var i = 0; i < length; i++) {
+        var transactionItem = { transMed: $("#transMed" + i).val(), transQuantity: $("#transQuantity" + i).val() }
+        transactionCart[i] = transactionItem;
+    }
+}
+
+function fillTransTable() {
+    var r = new Array(), j = -1;
+    for (var i = 0; i < transactionCart.length; i++) {
+        r[++j] = "<tr><td>";
+        if (transactionCart[i].transMed > 0)
+            r[++j] = medicationList[transactionCart[i].transMed - 1].medication_name;
+        r[++j] = "</td><td>";
+        r[++j] = $("#transQuantity" + i).val();
+        r[++j] = "</td><td>";
+        if (transactionCart[i].transMed > 0) {
+            r[++j] = (medicationList[transactionCart[i].transMed - 1].price * $("#transQuantity" + i).val()).toLocaleString('en-US');
+            r[++j] = " LBP";
+        }
+        r[++j] = "</td></tr>";
+    }
+    $("#transTable").html(r.join(""));
+}
+
+function fillTotalPrice() {
+    var total = 0;
+    for (var i = 0; i < transactionCart.length; i++) {
+        total += medicationList[transactionCart[i].transMed - 1].price * $("#transQuantity" + i).val()
+    }
+    $("#totalPrice").html(total.toLocaleString('en-US') + " LBP");
+}
+
+function insertOrder(total_price) {
+    var details = {
+        'patient_id': patientEmails[selectedPatient].patient_id,
+        'purchase_date': new Date().toISOString().substring(0, 10),
+        'total_price': total_price
+    };
+    console.log(details)
+    postData("assets/php/insertIntoOrders.php", prepareData(details))
+        .then(data => {
+            console.log(data)
+            if (data != "Error") {
+                for (var i = 0; i < transactionCart.length; i++) {
+                    var order_id = data;
+                    var medication_id = transactionCart[i].transMed;
+                    var quantity = transactionCart[i].transQuantity;
+                    var price = medicationList[medication_id - 1].price * quantity;
+                    insertOrderMedication(order_id, medication_id, quantity, price)
+                }
+            }
+        });
+}
+
+function insertOrderMedication(order_id, medication_id, quantity, price) {
+    var details = {
+        'order_id': order_id,
+        'medication_id': medication_id,
+        'quantity': quantity,
+        'price': price
+    };
+    console.log(details)
+    postData("assets/php/insertIntoOrderMedication.php", prepareData(details))
+        .then(data => {
+            if (data != "Error") {
+                $("#modal-2").modal('toggle');
+            }
+        });
 }
