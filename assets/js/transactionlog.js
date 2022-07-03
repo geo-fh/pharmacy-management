@@ -9,6 +9,7 @@ var columnTypes = ["Number", "String", "String", "Date", "Number"];
 var transactionCart = [{ transMed: 0, transQuantity: 1 }];
 var patientEmails;
 var medicationList;
+var selectedPatient = -1;
 
 $(function () {
     fetchLog();
@@ -35,6 +36,10 @@ function setEvents() {
         displayLog();
     })
 
+    $(document).on("change", "#patientEmails", function () {
+        selectedPatient = this.selectedIndex - 1;
+    })
+
     $(document).on("change", "#selectedLimit", function () {
         currentPage = 1;
         displayLog();
@@ -58,7 +63,6 @@ function setEvents() {
     })
 
     $(document).on("click", "#addTransFieldBtn", function () {
-        console.log(transactionCart)
         saveTransCart(transactionCart.length);
         if (transactionCart[transactionCart.length - 1].transMed > 0)
             addTransField();
@@ -92,6 +96,15 @@ function setEvents() {
         }
         insertOrder(total);
     })
+
+    $(document).on("click", "#transactionList > tr", function () {
+        var order_id = this.firstChild.innerHTML;
+        displayDetailsModal(order_id)
+    })
+
+    $(document).on("change", "#patientEmails", function () {
+        $("#confTransBtn").removeAttr("disabled");
+    })
 }
 
 function fetchLog() {
@@ -101,9 +114,9 @@ function fetchLog() {
             transactionLog = baseLog;
             postData("assets/php/selectOrderMedication.php", "")
                 .then(data => {
-                detailedLog = mergeMedicationNames(data)
-                addMedToArray();
-                displayLog();
+                    detailedLog = mergeMedicationNames(data)
+                    addMedToArray();
+                    displayLog();
                 });
         });
 }
@@ -290,7 +303,6 @@ function stringifyLog() {
         stringLog[key] = string;
     }
     logProcessed = true;
-    console.log(stringLog)
 }
 
 function fetchPatientEmails() {
@@ -429,10 +441,8 @@ function insertOrder(total_price) {
         'purchase_date': new Date().toISOString().substring(0, 10),
         'total_price': total_price
     };
-    console.log(details)
     postData("assets/php/insertIntoOrders.php", prepareData(details))
         .then(data => {
-            console.log(data)
             if (data != "Error") {
                 for (var i = 0; i < transactionCart.length; i++) {
                     var order_id = data;
@@ -452,11 +462,37 @@ function insertOrderMedication(order_id, medication_id, quantity, price) {
         'quantity': quantity,
         'price': price
     };
-    console.log(details)
     postData("assets/php/insertIntoOrderMedication.php", prepareData(details))
         .then(data => {
             if (data != "Error") {
                 $("#modal-1").modal('toggle');
+                location.reload();
             }
         });
+}
+
+function displayDetailsModal(order_id) {
+    $("#modal2Title").text("Order #" + order_id);
+    postData("assets/php/selectOrderDetails.php", prepareData({ 'order_id': order_id }))
+        .then(data => {
+            fillDetailsModal(data);
+        });
+    $("#modal-2").modal("toggle");
+}
+
+function fillDetailsModal(details) {
+    var r = new Array(), j = -1;
+    var total = 0;
+    for (var i = 0; i < details.length; i++) {
+        r[++j] = "<tr><td>";
+        r[++j] = details[i].medication_name;
+        r[++j] = "</td><td>";
+        r[++j] = details[i].quantity;
+        r[++j] = "</td><td>";
+        r[++j] = (parseInt(details[i].price)).toLocaleString("en-US") + " LBP";
+        r[++j] = "</td></tr>";
+        total += parseInt(details[i].price);
+    }
+    $("#totalPriceDetails").html(total.toLocaleString("en-US") + " LBP");
+    $("#orderDetailsTable").html(r.join(""));
 }

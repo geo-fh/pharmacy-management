@@ -39,7 +39,6 @@ function setEvents() {
     })
 
     $(document).on("click", "#addTransFieldBtn", function () {
-        console.log(transactionCart)
         saveTransCart(transactionCart.length);
         if (transactionCart[transactionCart.length - 1].transMed > 0)
             addTransField();
@@ -251,10 +250,8 @@ function insertOrder(total_price) {
         'purchase_date': new Date().toISOString().substring(0, 10),
         'total_price': total_price
     };
-    console.log(details)
     postData("assets/php/insertIntoOrders.php", prepareData(details))
         .then(data => {
-            console.log(data)
             if (data != "Error") {
                 for (var i = 0; i < transactionCart.length; i++) {
                     var order_id = data;
@@ -274,7 +271,6 @@ function insertOrderMedication(order_id, medication_id, quantity, price) {
         'quantity': quantity,
         'price': price
     };
-    console.log(details)
     postData("assets/php/insertIntoOrderMedication.php", prepareData(details))
         .then(data => {
             if (data != "Error") {

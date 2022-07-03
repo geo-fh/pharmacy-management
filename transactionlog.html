@@ -135,7 +135,7 @@
                                             </select>&nbsp;</label>
                                     </div>
                                 </div>
-                                <div class="col-xxl-4 d-xxl-flex justify-content-xxl-end"><button
+                                <div class="col-xxl-4 d-xxl-flex justify-content-xxl-end"><button id="launchTransModal"
                                         class="btn btn-primary" type="button" data-bs-target="#modal-1"
                                         data-bs-toggle="modal">Record Transaction</button>
                                     <div class="modal fade" role="dialog" tabindex="-1" id="modal-1"
@@ -189,9 +189,48 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer"><button class="btn btn-light" type="button"
-                                                        data-bs-dismiss="modal">Cancel</button><button
-                                                        class="btn btn-primary" type="button">Add</button></div>
+                                                <div class="modal-footer"><button id="cancelTrans" class="btn btn-light"
+                                                        type="button" data-bs-dismiss="modal">Cancel</button><button id="confTransBtn"
+                                                        id="addTransBtn" class="btn btn-primary"
+                                                        type="button" disabled>Add</button></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" role="dialog" tabindex="-1" id="modal-2"
+                                        style="text-align: center;">
+                                        <div class="modal-dialog modal-dialog-centered" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h4 id="modal2Title" class="modal-title"></h4><button type="button"
+                                                        class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="row">
+                                                        <div class="col">
+                                                            <div class="table-responsive">
+                                                                <table class="table">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Medication</th>
+                                                                            <th>Quantity</th>
+                                                                            <th>Subtotal</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="orderDetailsTable"></tbody>
+                                                                    <tfoot>
+                                                                        <tr>
+                                                                            <th colspan="2">Total</th>
+                                                                            <th id="totalPriceDetails"></th>
+                                                                        </tr>
+                                                                    </tfoot>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer"><button id="cancelTrans" class="btn btn-light"
+                                                        type="button" data-bs-dismiss="modal">Close</button></div>
                                             </div>
                                         </div>
                                     </div>

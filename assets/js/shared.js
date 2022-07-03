@@ -34,7 +34,7 @@ function getDate(date) {
   return `${day}-${month}-${year}`;
 }
 
-populateSidebar('pharmacist');
+populateSidebar('admin');
 
 function populateSidebar(usertype) {
   var r = new Array(), j = -1;

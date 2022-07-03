@@ -125,84 +125,71 @@
                             <div class="row">
                                 <div class="col-md-6 col-xxl-10 text-nowrap">
                                     <div id="dataTable_length-1" class="dataTables_length" aria-controls="dataTable">
-                                        <label class="form-label">Show&nbsp;<select
+                                        <label class="form-label">Show&nbsp;<select id="selectedLimit"
                                                 class="d-inline-block form-select form-select-sm">
                                                 <option value="10" selected="">10</option>
                                                 <option value="25">25</option>
                                                 <option value="50">50</option>
                                                 <option value="100">100</option>
-                                            </select>&nbsp;</label></div>
+                                            </select>&nbsp;</label>
+                                    </div>
                                 </div>
                                 <div class="col-md-6 col-xxl-2 offset-xxl-0">
                                     <div class="text-md-end dataTables_filter" id="dataTable_filter-1"><label
-                                            class="form-label" style="width: 100%;"><input type="search"
+                                            class="form-label" style="width: 100%;"><input id="userSearch" type="search"
                                                 class="form-control form-control-sm" aria-controls="dataTable"
                                                 placeholder="Search"></label></div>
                                 </div>
                             </div>
+                            <div class="modal fade" role="dialog" tabindex="-1" id="modal-1"
+                                style="text-align: center;">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 id="modalTitle" class="modal-title"></h4><button type="button"
+                                                class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div id="modal1Body" class="modal-body">
+                                            <div class="row" style="margin-bottom: 20px;">
+                                                <div class="col"><span>Full Name:&nbsp;</span></div>
+                                                <div class="col"><input id="fullName" type="text" disabled></select>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-bottom: 20px;">
+                                                <div class="col"><span>New Email Address:&nbsp;</span></div>
+                                                <div class="col"><input id="newEmail" type="email"></select></div>
+                                            </div>
+                                            <div class="row" style="margin-bottom: 20px;">
+                                                <div class="col"><span>New Password:&nbsp;</span></div>
+                                                <div class="col"><input id="newPassword" type="password"></div>
+                                            </div>
+                                            <div class="row" style="margin-bottom: 20px;">
+                                                <div class="col"><span>Activated:&nbsp;</span><input
+                                                        class="form-check-input" type="checkbox" value=""
+                                                        id="activationStatus" checked></div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer"><button class="btn btn-light" type="button"
+                                                data-bs-dismiss="modal">Cancel</button><button id="submitManage"
+                                                class="btn btn-primary" type="button">Add</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="table-responsive table mt-2" id="dataTable" role="grid"
                                 aria-describedby="dataTable_info">
-                                <table class="table my-0 centertable" id="dataTable">
+                                <table class="table centertable tablesorter" id="dataTable">
                                     <thead>
                                         <tr class="text-center">
-                                            <th>User ID</th>
-                                            <th>User Type</th>
-                                            <th>Email</th>
-                                            <th>Name</th>
-                                            <th>Sign Up Date</th>
+                                            <th id="user_id">User ID</th>
+                                            <th id="user_type">User Type</th>
+                                            <th id="email_address">Email</th>
+                                            <th id="full_name">Name</th>
+                                            <th id="sign_up_date">Sign Up Date</th>
                                             <th></th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr class="text-center">
-                                            <td>0001</td>
-                                            <td>Pharmacist</td>
-                                            <td>example@email.com</td>
-                                            <td></td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td><button class="btn btn-primary" type="button">Manage</button></td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0002</td>
-                                            <td>Pharmacist</td>
-                                            <td>example@email.com<br></td>
-                                            <td></td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td><button class="btn btn-primary" type="button">Manage</button></td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0003</td>
-                                            <td>Patient</td>
-                                            <td>example@email.com<br></td>
-                                            <td></td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td><button class="btn btn-primary" type="button">Manage</button></td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0004</td>
-                                            <td>Patient</td>
-                                            <td>example@email.com<br></td>
-                                            <td></td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td><button class="btn btn-primary" type="button">Manage</button></td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0005</td>
-                                            <td>Patient</td>
-                                            <td>example@email.com<br></td>
-                                            <td></td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td><button class="btn btn-primary" type="button">Manage</button></td>
-                                        </tr>
-                                        <tr class="text-center">
-                                            <td>0006</td>
-                                            <td>Patient</td>
-                                            <td>example@email.com<br></td>
-                                            <td></td>
-                                            <td>dd-MMM-yyyy</td>
-                                            <td><button class="btn btn-primary" type="button">Manage</button></td>
-                                        </tr>
-                                    </tbody>
+                                    <tbody id="userList"></tbody>
                                     <tfoot>
                                         <tr class="text-center">
                                             <td><strong>User ID</strong></td>
@@ -217,21 +204,12 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-6 align-self-center">
-                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite">
-                                        Showing 1 to 6 of 6</p>
+                                    <p id="dataTable_info" class="dataTables_info" role="status" aria-live="polite"></p>
                                 </div>
                                 <div class="col-md-6">
                                     <nav
                                         class="d-lg-flex justify-content-lg-end dataTables_paginate paging_simple_numbers">
-                                        <ul class="pagination">
-                                            <li class="page-item disabled"><a class="page-link" aria-label="Previous"
-                                                    href="#"><span aria-hidden="true">«</span></a></li>
-                                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"><span
-                                                        aria-hidden="true">»</span></a></li>
-                                        </ul>
+                                        <ul id="userPagination" class="pagination"></ul>
                                     </nav>
                                 </div>
                             </div>
@@ -254,6 +232,7 @@
     <script src="assets/js/Portfolio-with-Category-switcher.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="assets/js/shared.js"></script>
+    <script src="assets/js/usermanagement.js"></script>
     <script src="assets/js/theme.js"></script>
 </body>
 
