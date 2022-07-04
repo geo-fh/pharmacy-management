@@ -18,8 +18,6 @@ if (
         echo json_encode("Error");
     }
     mysqli_close($con);
-} else if (
-
-)
+}
 
 ?>
