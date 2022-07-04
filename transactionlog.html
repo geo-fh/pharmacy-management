@@ -19,6 +19,16 @@
 </head>
 
 <body id="page-top">
+    <div class="toast-container p-3 top-0 start-50 translate-middle-x" style="position: fixed; z-index: 2000;">
+        <div class="toast" id="customToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i id="toastSymbol" class="fa">&nbsp;</i>
+                <strong id="toastMessage1" class="me-auto"></strong>
+            </div>
+            <div id="toastMessage2" class="toast-body"></div>
+            <div class="progress"></div>
+        </div>
+    </div>
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
             <div class="container-fluid d-flex flex-column p-0"><a
@@ -190,8 +200,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer"><button id="cancelTrans" class="btn btn-light"
-                                                        type="button" data-bs-dismiss="modal">Cancel</button><button id="confTransBtn"
-                                                        id="addTransBtn" class="btn btn-primary"
+                                                        type="button" data-bs-dismiss="modal">Cancel</button><button id="confTransBtn" class="btn btn-primary"
                                                         type="button" disabled>Add</button></div>
                                             </div>
                                         </div>

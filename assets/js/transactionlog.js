@@ -10,13 +10,14 @@ var transactionCart = [{ transMed: 0, transQuantity: 1 }];
 var patientEmails;
 var medicationList;
 var selectedPatient = -1;
+var pages;
 
 $(function () {
     fetchLog();
-    setNeutralArrows();
     setEvents();
     fetchMedicationList();
     fillTransaction();
+    configureToast();
 })
 
 function setEvents() {
@@ -27,7 +28,7 @@ function setEvents() {
                     currentPage--;
                 break;
             case "nextPage":
-                if (currentPage < 5)
+                if (currentPage < pages)
                     currentPage++;
                 break;
             default:
@@ -89,7 +90,7 @@ function setEvents() {
         fillTotalPrice();
     })
 
-    $(document).on("click", "#addTransBtn", function () {
+    $(document).on("click", "#confTransBtn", function () {
         var total = 0;
         for (var i = 0; i < transactionCart.length; i++) {
             total += medicationList[transactionCart[i].transMed - 1].price * $("#transQuantity" + i).val()
@@ -103,7 +104,10 @@ function setEvents() {
     })
 
     $(document).on("change", "#patientEmails", function () {
-        $("#confTransBtn").removeAttr("disabled");
+        if($("#patientEmails option:selected").val() == 0)
+            $("#confTransBtn").prop("disabled", true);
+        else
+            $("#confTransBtn").removeAttr("disabled");
     })
 }
 
@@ -117,6 +121,7 @@ function fetchLog() {
                     detailedLog = mergeMedicationNames(data)
                     addMedToArray();
                     displayLog();
+                    setNeutralArrows();
                 });
         });
 }
@@ -175,7 +180,7 @@ function populateLog(start, end) {
 function updatePagination(currentPage) {
     var limit = $("#selectedLimit option:selected").val();
     var size = transactionLog.length;
-    var pages = Math.ceil(size / limit);
+    pages = Math.ceil(size / limit);
     var r = new Array(), j = -1;
     r[++j] = "<li class=\"page-item\"";
     if (currentPage == 1)
@@ -248,6 +253,8 @@ function resetSortDirection(index, dir) {
 function setNeutralArrows() {
     for (var i = 0; i < columns.length; i++) {
         $('#' + columns[i]).addClass("header");
+        $('#' + columns[i]).removeClass("headerSortUp");
+        $('#' + columns[i]).removeClass("headerSortDown");
     }
 }
 
@@ -466,7 +473,8 @@ function insertOrderMedication(order_id, medication_id, quantity, price) {
         .then(data => {
             if (data != "Error") {
                 $("#modal-1").modal('toggle');
-                location.reload();
+                successToast("Transaction added successfully")
+                fetchLog();
             }
         });
 }
@@ -495,4 +503,17 @@ function fillDetailsModal(details) {
     }
     $("#totalPriceDetails").html(total.toLocaleString("en-US") + " LBP");
     $("#orderDetailsTable").html(r.join(""));
+}
+
+function configureToast() {
+    const progress = $(".progress");
+    var toastElement = new bootstrap.Toast($("#customToast"), { animation: true, delay: 2000 });
+    $(document).on("click", "#confTransBtn", function () {
+        toastElement.show();
+        progress.addClass("active");
+        let timer;
+        timer = setTimeout(() => {
+            progress.removeClass("active");
+        }, 2300);
+    })
 }

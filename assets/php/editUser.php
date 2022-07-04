@@ -3,20 +3,37 @@
 include "dbcreds.php";
 
 if (
+    isset($_POST["user_id"]) &&
     isset($_POST["email_address"]) &&
-    isset($_POST["quantity"]) &&
-    isset($_POST["expiration_date"])
+    isset($_POST["password"]) &&
+    isset($_POST["activated"]) &&
+    isset($_POST["user_type"])
 ) {
+    $user_id = $_POST["user_id"];
     $email_address = $_POST["email_address"];
-    $quantity = $_POST["quantity"];
-    $expiration_date = $_POST["expiration_date"];
-
-    $query = "UPDATE stock SET quantity = '$quantity', expiration_date = '$expiration_date' WHERE batch_id = '$batch_id'";
-    if ($con->query($query) === true) {
-		echo json_encode("Success");
+    $password = $_POST["password"];
+    $activated = $_POST["activated"];
+    $user_type = $_POST["user_type"];
+    if($password == "") {
+        $query = "UPDATE user SET email_address = '$email_address' WHERE user_id = '$user_id'";
     } else {
-        echo json_encode("Error");
+        $query = "UPDATE user SET email_address = '$email_address', password = '$password' WHERE user_id = '$user_id'";
     }
+    if($user_type == "1") {
+        $query2 = "UPDATE pharmacist SET activated = '$activated' WHERE user_id = '$user_id'";
+        if ($con->query($query) === true && $con->query($query2) === true) {
+            echo json_encode("Success");
+        } else {
+            echo json_encode("Error");
+        }
+    } else {
+        if ($con->query($query) === true) {
+            echo json_encode("Success");
+        } else {
+            echo json_encode("Error");
+        }
+    }
+
     mysqli_close($con);
 }
 

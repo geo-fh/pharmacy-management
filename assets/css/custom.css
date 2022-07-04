@@ -36,3 +36,44 @@ div.modal-body > div.row > div.col select, input {
   width: 15rem;
   text-align: center;
 }
+
+.toast-body {
+  opacity: 100%;
+}
+
+.toast .progress{
+  position: relative;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: #ddd;
+}
+
+.toast .progress:before{
+  content: '';
+  position: relative;
+  bottom: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  background-color: #4070f4;
+}
+
+.progress.active:before{
+  animation: progress 2s linear forwards;
+}
+
+@keyframes progress {
+  100%{
+      right: 100%;
+  }
+}
+
+.success {
+  color: green;
+}
+
+.failure {
+  color: red;
+}

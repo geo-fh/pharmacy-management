@@ -21,3 +21,21 @@ $("#loginForm").on("submit", function (e) {
 function saveSession(email, usertype) {
   document.cookie = "usertype=" + usertype;
 }
+
+function successToast(text) {
+  $("#toastSymbol").removeClass("fa-multiplication failure");
+  $("#toastSymbol").addClass("fa-check success");
+  $("#toastMessage1").removeClass("failure");
+  $("#toastMessage1").addClass("success");
+  $("#toastMessage1").text("Success");
+  $("#toastMessage2").text(text);
+}
+
+function failureToast(text) {
+  $("#toastSymbol").removeClass("fa-check success");
+  $("#toastSymbol").addClass("fa-multiplication failure");
+  $("#toastMessage1").removeClass("success");
+  $("#toastMessage1").addClass("failure");
+  $("#toastMessage1").text("Failure");
+  $("#toastMessage2").text(text);
+}

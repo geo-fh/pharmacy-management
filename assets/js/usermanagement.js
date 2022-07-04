@@ -5,11 +5,13 @@ var currentPage = 1;
 var sortDirection = [0, 0, 0, 0, 0]; // 0 is unset, 1 is ascending, 2 is descending
 var columns = ["user_id", "user_type", "email_address", "full_name", "sign_up_date"];
 var columnTypes = ["Number", "String", "String", "String", "Date"];
+var selectedUser = [0, 0];
+var pages;
 
 $(function () {
     fetchUsers();
-    setNeutralArrows();
     setEvents();
+    configureToast();
 })
 
 function setEvents() {
@@ -20,7 +22,7 @@ function setEvents() {
                     currentPage--;
                 break;
             case "nextPage":
-                if (currentPage < 5)
+                if (currentPage < pages)
                     currentPage++;
                 break;
             default:
@@ -47,12 +49,12 @@ function setEvents() {
         displayUsers();
     })
 
-    $(document).on("click", ".userManage", function() {
+    $(document).on("click", ".userManage", function () {
         var user_id = $(this).parentsUntil("tbody").children("td")[0].firstChild.data;
         displayManageModal(user_id);
     })
 
-    $(document).on("click", "#submitManage", function() {
+    $(document).on("click", "#submitManage", function () {
         submitManage();
     })
 }
@@ -63,6 +65,7 @@ function fetchUsers() {
             baseUsers = fixUserType(data);
             users = baseUsers;
             displayUsers();
+            setNeutralArrows();
         });
 }
 
@@ -99,13 +102,13 @@ function populateUsers(start, end) {
 }
 
 function fixUserType(array) {
-    for(i in array) {
-        switch(array[i].user_type) {
+    for (i in array) {
+        switch (array[i].user_type) {
             case "1":
-                if(array[i].activated == 1)
+                if (array[i].activated == 1)
                     array[i].user_type = "Pharmacist";
                 else
-                    array[i].user_type = "Pharmacist (Pending)";
+                    array[i].user_type = "Pharmacist (Unactivated)";
                 break;
             case "2":
                 array[i].user_type = "Admin";
@@ -123,7 +126,7 @@ function fixUserType(array) {
 function updatePagination(currentPage) {
     var limit = $("#selectedLimit option:selected").val();
     var size = users.length;
-    var pages = Math.ceil(size / limit);
+    pages = Math.ceil(size / limit);
     var r = new Array(), j = -1;
     r[++j] = "<li class=\"page-item\"";
     if (currentPage == 1)
@@ -196,6 +199,8 @@ function resetSortDirection(index, dir) {
 function setNeutralArrows() {
     for (var i = 0; i < columns.length; i++) {
         $('#' + columns[i]).addClass("header");
+        $('#' + columns[i]).removeClass("headerSortUp");
+        $('#' + columns[i]).removeClass("headerSortDown");
     }
 }
 
@@ -263,12 +268,12 @@ function fillDetailsModal(details) {
     var checkbox = $("#activationStatus");
     $("#fullName").val(details[0].full_name);
     $("#newEmail").val(details[0].email_address);
-    if(details[0].user_type != 1) {
+    if (details[0].user_type != 1) {
         checkbox.prop("disabled", true);
         checkbox.prop("checked", true);
     } else {
         checkbox.removeAttr("disabled");
-        if(details[0].activated == 1) {
+        if (details[0].activated == 1) {
             checkbox.prop("checked", true);
         }
         else {
@@ -280,15 +285,61 @@ function fillDetailsModal(details) {
 function getDetails(user_id) {
     var details = {
         'user_id': user_id
-      };
-      postData("assets/php/selectUserInfo.php", prepareData(details))
+    };
+    postData("assets/php/selectUserInfo.php", prepareData(details))
         .then(data => {
             fillDetailsModal(data);
+            selectedUser[0] = data[0].user_id;
+            selectedUser[1] = data[0].user_type;
         });
 }
 
 function submitManage() {
-    console.log($("#newEmail").val());
-    console.log($("#newPassword").val());
-    console.log($("#activationStatus")[0].checked);
+    var user_id = selectedUser[0];
+    var email_address = $("#newEmail").val();
+    var password = $("#newPassword").val();
+    var activated;
+    if ($("#activationStatus")[0].checked)
+        activated = 1;
+    else
+        activated = 0;
+    var user_type = selectedUser[1];
+    if(email_address == "") {
+        failureToast("Please enter a valid email address");
+    } else {
+        updateDetails(user_id, email_address, password, activated, user_type);
+    }
+}
+
+function updateDetails(user_id, email_address, password, activated, user_type) {
+    var details = {
+        'user_id': user_id,
+        'email_address': email_address,
+        'password': password,
+        'activated': activated,
+        'user_type': user_type
+    };
+    postData("assets/php/editUser.php", prepareData(details))
+        .then(data => {
+            if (data != "Error") {
+                successToast("Account edited successfully");
+                $("#modal-1").modal('toggle');
+                fetchUsers();
+            } else {
+                failureToast("Error");
+            }
+        });
+}
+
+function configureToast() {
+    const progress = $(".progress");
+    var toastElement = new bootstrap.Toast($("#customToast"), { animation: true, delay: 2000 });
+    $(document).on("click", "#submitManage", function () {
+        toastElement.show();
+        progress.addClass("active");
+        let timer;
+        timer = setTimeout(() => {
+            progress.removeClass("active");
+        }, 2300);
+    })
 }

@@ -19,6 +19,16 @@
 </head>
 
 <body id="page-top">
+    <div class="toast-container p-3 top-0 start-50 translate-middle-x" style="position: fixed; z-index: 2000;">
+        <div class="toast" id="customToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i id="toastSymbol" class="fa">&nbsp;</i>
+                <strong id="toastMessage1" class="me-auto"></strong>
+            </div>
+            <div id="toastMessage2" class="toast-body"></div>
+            <div class="progress"></div>
+        </div>
+    </div>
     <div id="wrapper">
         <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
             <div class="container-fluid d-flex flex-column p-0"><a
@@ -152,7 +162,7 @@
                                                     </div>
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Quantity:&nbsp;</span></div>
-                                                        <div class="col"><input id="atsQuantity" type="number"></div>
+                                                        <div class="col"><input id="atsQuantity" type="number" min="1"></div>
                                                     </div>
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Expiry Date:</span></div>
@@ -161,7 +171,7 @@
                                                 </div>
                                                 <div class="modal-footer"><button id="atsCancel" class="btn btn-light"
                                                         type="button" data-bs-dismiss="modal">Cancel</button><button
-                                                        id="atsBtn" class="btn btn-primary" type="button">Add</button>
+                                                        id="atsBtn" class="btn btn-primary toastBtns" type="button">Add</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -171,27 +181,28 @@
                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title" id="modalTitle">Edit Batch</h4><button type="button"
-                                                        class="btn-close" data-bs-dismiss="modal"
+                                                    <h4 class="modal-title" id="modalTitle">Edit Batch</h4><button
+                                                        type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Medication:&nbsp;</span></div>
-                                                        <div class="col"><input disabled="true" id="editName" type="text"></div>
+                                                        <div class="col"><input disabled="true" id="editName"
+                                                                type="text"></div>
                                                     </div>
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Quantity:&nbsp;</span></div>
-                                                        <div class="col"><input id="editQuantity" type="number"></div>
+                                                        <div class="col"><input id="editQuantity" type="number" min="1"></div>
                                                     </div>
                                                     <div class="row" style="margin-bottom: 20px;">
                                                         <div class="col"><span>Expiry Date:</span></div>
                                                         <div class="col"><input id="editExpiry" type="date"></div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer"><button class="btn btn-light"
-                                                        type="button" data-bs-dismiss="modal">Cancel</button><button
-                                                        id="editBtn" class="btn btn-primary" type="button">Edit</button>
+                                                <div class="modal-footer"><button class="btn btn-light" type="button"
+                                                        data-bs-dismiss="modal">Cancel</button><button id="editBtn"
+                                                        class="btn btn-primary toastBtns" type="button">Edit</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -207,12 +218,13 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <div class="row" style="margin-bottom: 20px;">
-                                                        <div class="col"><span>Are you sure you want to remove batch </span><span id="remBatchNo"></span></div>
+                                                        <div class="col"><span>Are you sure you want to remove batch
+                                                            </span><span id="remBatchNo"></span></div>
                                                     </div>
                                                 </div>
-                                                <div class="modal-footer"><button class="btn btn-light"
-                                                        type="button" data-bs-dismiss="modal">No</button><button
-                                                        id="remBtn" class="btn btn-primary" type="button">Yes</button>
+                                                <div class="modal-footer"><button class="btn btn-light" type="button"
+                                                        data-bs-dismiss="modal">No</button><button id="remBtn"
+                                                        class="btn btn-primary toastBtns" type="button">Yes</button>
                                                 </div>
                                             </div>
                                         </div>

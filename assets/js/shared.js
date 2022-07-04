@@ -83,3 +83,21 @@ function addActive() {
   var id = "#" + window.location.pathname.split("/").pop() + "Page";
   $(id).addClass("active");
 }
+
+function successToast(text) {
+  $("#toastSymbol").removeClass("fa-multiplication failure");
+  $("#toastSymbol").addClass("fa-check success");
+  $("#toastMessage1").removeClass("failure");
+  $("#toastMessage1").addClass("success");
+  $("#toastMessage1").text("Success");
+  $("#toastMessage2").text(text);
+}
+
+function failureToast(text) {
+  $("#toastSymbol").removeClass("fa-check success");
+  $("#toastSymbol").addClass("fa-times failure");
+  $("#toastMessage1").removeClass("success");
+  $("#toastMessage1").addClass("failure");
+  $("#toastMessage1").text("Failure");
+  $("#toastMessage2").text(text);
+}
