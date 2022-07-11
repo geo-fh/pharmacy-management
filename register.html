@@ -10,14 +10,26 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.css">
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="assets/css/cdns/swiper-bundle.css">
+    <link rel="stylesheet" href="assets/css/cdns/swiper-bundle.min.css">
     <link rel="stylesheet" href="assets/css/Portfolio-with-Category-switcher.css">
     <link rel="stylesheet" href="assets/css/Testimonials.css">
     <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
 </head>
 
 <body class="d-xxl-flex align-items-xxl-center bg-gradient-primary">
+    <div class="toast-container p-3 top-0 start-50 translate-middle-x" style="position: fixed; z-index: 2000;">
+        <div class="toast" id="customToast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <i id="toastSymbol" class="fa">&nbsp;</i>
+                <strong id="toastMessage1" class="me-auto"></strong>
+            </div>
+            <div id="toastMessage2" class="toast-body"></div>
+            <div class="progress"></div>
+        </div>
+    </div>
     <div class="container" style="width: 50%;">
         <div class="card shadow-lg o-hidden border-0 my-5">
             <div class="card-body p-0">
@@ -27,28 +39,56 @@
                             <div class="text-center">
                                 <h4 class="text-dark mb-4">Create an Account!</h4>
                             </div>
-                            <form class="user" id="registerForm">
+                            <form class="user">
                                 <div class="row mb-3">
-                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                            type="text" id="exampleFirstName" placeholder="First Name"
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user "
+                                            type="text" id="registerFirstName" placeholder="First Name"
                                             name="first_name"></div>
                                     <div class="col-sm-6"><input class="form-control form-control-user" type="text"
-                                            id="exampleFirstName" placeholder="Last Name" name="last_name"></div>
+                                            id="registerLastName" placeholder="Last Name" name="last_name"></div>
                                 </div>
-                                <div class="mb-3"><input class="form-control form-control-user" type="email"
-                                        id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address"
-                                        name="email"></div>
                                 <div class="row mb-3">
                                     <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
-                                            type="password" id="examplePasswordInput" placeholder="Password"
+                                            type="tel" id="registerMobile" placeholder="Mobile Number" name="mobile">
+                                    </div>
+                                    <div class="col-sm-6"><select class="form-control form-control-user form-select"
+                                            style="text-align: center;" type="text" id="account_type"
+                                            name="account_type">
+                                            <option value="" disabled selected>Please select an account type</option>
+                                            <option value="Patient">Patient</option>
+                                            <option value="Pharmacist">Pharmacist</option>
+                                        </select></div>
+                                </div>
+                                <div class="mb-3">
+                                    <input class="form-control form-control-user" type="email" id="registerEmail"
+                                        aria-describedby="emailHelp" placeholder="Email Address" name="email">
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user"
+                                            type="password" id="registerPassword1" placeholder="Password"
                                             name="password"></div>
                                     <div class="col-sm-6"><input class="form-control form-control-user" type="password"
-                                            id="exampleRepeatPasswordInput" placeholder="Repeat Password"
-                                            name="password_repeat"></div>
-                                </div><button class="btn btn-primary d-block btn-user w-100" type="submit">Next</button>
+                                            id="registerPassword2" placeholder="Repeat Password" name="password_repeat">
+                                    </div>
+                                </div><button class="btn btn-primary d-block btn-user w-100 toastBtn" type="button"
+                                    id="nextButton">Next</button>
                                 <hr>
                             </form>
-                            <div class="text-center"><a class="small" href="forgot-password.html">Forgot Password?</a>
+                            <div class="modal fade" role="dialog" tabindex="-1" id="modal-1"
+                                style="text-align: center;">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 id="modalTitle" class="modal-title"></h4><button type="button"
+                                                class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div id="modal1Body" class="modal-body"></div>
+                                        <div class="modal-footer"><button class="btn btn-light" type="button"
+                                                data-bs-dismiss="modal">Cancel</button><button id="submitRegister"
+                                                class="btn btn-primary toastBtn" type="button">Register</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="text-center"><a class="small" href="login.html">Already have an account?
                                     Login!</a></div>
@@ -60,11 +100,16 @@
     </div>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bs-init.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
-    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.js"></script>
-    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/js/cdns/glightbox.min.js"></script>
+    <script src="assets/js/cdns/isotope.pkgd.js"></script>
+    <script src="assets/js/cdns/swiper-bundle.min.js"></script>
     <script src="assets/js/Portfolio-with-Category-switcher.js"></script>
+    <script src="assets/js/cdns/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="assets/js/theme.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="assets/js/shared.js"></script>
+    <script src="assets/js/register.js"></script>
 </body>
 
 </html>

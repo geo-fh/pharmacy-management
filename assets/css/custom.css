@@ -3,7 +3,7 @@
 }
 
 .form-control {
-  color: black!important;
+  color: black !important;
 }
 
 tr:nth-child(even) {
@@ -18,16 +18,19 @@ table.tablesorter thead tr .header {
   background-image: url(../img/black-unsorted.gif);
   background-repeat: no-repeat;
   background-position: center right;
-  cursor: pointer; 
+  cursor: pointer;
 }
+
 table.tablesorter thead tr .headerSortUp {
   background-image: url(../img/black-asc.gif);
 }
+
 table.tablesorter thead tr .headerSortDown {
   background-image: url(../img/black-desc.gif);
 }
 
-div.modal-body > div.row > div.col select, input {
+div.modal-body>div.row>div.col select,
+input {
   width: 15rem;
   text-align: center;
 }
@@ -41,7 +44,7 @@ div.modal-body > div.row > div.col select, input {
   opacity: 100%;
 }
 
-.toast .progress{
+.toast .progress {
   position: relative;
   bottom: 0;
   left: 0;
@@ -50,7 +53,7 @@ div.modal-body > div.row > div.col select, input {
   background: #ddd;
 }
 
-.toast .progress:before{
+.toast .progress:before {
   content: '';
   position: relative;
   bottom: 0;
@@ -60,13 +63,13 @@ div.modal-body > div.row > div.col select, input {
   background-color: #4070f4;
 }
 
-.progress.active:before{
+.progress.active:before {
   animation: progress 2s linear forwards;
 }
 
 @keyframes progress {
-  100%{
-      right: 100%;
+  100% {
+    right: 100%;
   }
 }
 
@@ -76,4 +79,56 @@ div.modal-body > div.row > div.col select, input {
 
 .failure {
   color: red;
+}
+
+.aanddlist {
+  font-size: 17px;
+  margin: 5px;
+  margin-left: 10px;
+  vertical-align: top;
+}
+
+.btn-closeA {
+  vertical-align: text-bottom;
+}
+
+.btn-closeD {
+  vertical-align: text-bottom;
+}
+
+.fieldError {
+  background-color: #ffdddd;
+  border-color: red;
+  border-width: 2px;
+}
+
+.fieldError:focus {
+  border-color: red;
+  border-width: 2px;
+}
+
+.statsError {
+  background-color: rgb(255, 144, 144);
+  font-weight: bold;
+}
+
+.cartQt {
+  max-width: 80px;
+}
+
+.input-group {
+  width: fit-content;
+  margin: auto;
+}
+
+.noPres {
+  background-color: #ffc0c0 !important;
+}
+
+.yesPres {
+  background-color: #c0ffd6 !important;
+}
+
+.poDiv {
+  text-align: right;
 }

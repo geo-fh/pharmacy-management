@@ -17,7 +17,7 @@ if (
     $end_date = $_POST["end_date"];
     $usage_directions = $_POST["usage_directions"];
 
-    $query = "INSERT INTO prescription (prescription_id, patient_id, medication_id, quantity, start_date, end_date, usage_directions) VALUES (NULL, '$patient_id', '$medication_id', '$quantity', '$start_date', '$end_date', '$usage_directions')";
+    $query = "INSERT INTO prescription (prescription_id, patient_id, medication_id, quantity, used_quantity, prescription_date, end_date, usage_directions) VALUES (NULL, '$patient_id', '$medication_id', '$quantity', 0, '$start_date', '$end_date', '$usage_directions')";
 	if ($con->query($query) === true) {
 		echo mysqli_insert_id($con);
     } else {

@@ -12,10 +12,8 @@ var pages;
 
 $(function () {
     fetchMedicationList();
-    loadUser();
     fetchStock();
     setEvents();
-    configureToast();
 })
 
 function setEvents() {
@@ -34,17 +32,18 @@ function setEvents() {
         }
         displayStock();
     })
-    
+
     $(document).on("change", "#selectedLimit", function () {
         currentPage = 1;
         displayStock();
     })
-    
-    $(document).on("click", ".tablesorter > thead > tr > th", function () {
+
+    $(document).on("click", ".tablesorter > thead > tr > th", function (e) {
+        e.stopImmediatePropagation();
         if (this.id != "")
             sortColumn(this.id);
     })
-    
+
     $(document).on("input", "#stockSearch", function (e) {
         if (e.target.value == "")
             stock = baseStock;
@@ -57,48 +56,48 @@ function setEvents() {
         dropdownParent: $("#modal-1")
     });
 
-    $(document).on("click", "#atsBtn", function() {
+    $(document).on("click", "#atsBtn", function () {
         var medication_id = $("option:selected", "#medSearch")[0].value;
         var quantity = $("#atsQuantity").val();
         var expiration_date = $("#atsExpiry").val();
-        if(medication_id == 0) {
+        if (medication_id == 0) {
             failureToast("Please select an item to add");
         } else if (quantity == 0) {
             failureToast("Please select a quantity");
         } else if (quantity < 0) {
             failureToast("You can't add a negative quantity");
-        } else if((new Date() - new Date(expiration_date)) > 0) {
+        } else if ((new Date() - new Date(expiration_date)) > 0) {
             failureToast("You can't add an expired product");
-        } else if(expiration_date == "") {
+        } else if (expiration_date == "") {
             failureToast("Please select an expiry date");
         } else {
             insertBatch(medication_id, quantity, expiration_date);
         }
     })
 
-    $(document).on("click", "#atsCancel", function() {
+    $(document).on("click", "#atsCancel", function () {
         populateMeds();
         $("#atsQuantity").val("");
         $("#atsExpiry").val("");
     })
 
-    $(document).on("click", ".batchEdit", function() {
+    $(document).on("click", ".batchEdit", function () {
         var batch_id = $(this).parentsUntil("tbody").children("td")[0].firstChild.data;
         displayEditModal(batch_id);
     })
 
-    $(document).on("click", ".batchRem", function() {
+    $(document).on("click", ".batchRem", function () {
         var batch_id = $(this).parentsUntil("tbody").children("td")[0].firstChild.data;
         rem_batch_index = batch_id;
         $("#modal-3").modal('toggle');
         $("#remBatchNo").text(batch_id + "?");
     })
 
-    $(document).on("click", "#remBtn", function() {
+    $(document).on("click", "#remBtn", function () {
         removeBatch(rem_batch_index);
     })
 
-    $(document).on("click", "#editBtn", function() {
+    $(document).on("click", "#editBtn", function () {
         var batch_id = stock[batch_index].batch_id;
         var quantity = $("#editQuantity").val();
         var expiration_date = $("#editExpiry").val();
@@ -106,9 +105,9 @@ function setEvents() {
             failureToast("Please select a quantity");
         } else if (quantity < 0) {
             failureToast("You can't add a negative quantity");
-        } else if((new Date() - new Date(expiration_date)) > 0) {
+        } else if ((new Date() - new Date(expiration_date)) > 0) {
             failureToast("Please select a future date");
-        } else if(expiration_date == "") {
+        } else if (expiration_date == "") {
             failureToast("Please select an expiry date");
         } else {
             editBatch(batch_id, quantity, expiration_date);
@@ -322,7 +321,7 @@ function insertBatch(medication_id, quantity, expiration_date) {
     };
     postData("assets/php/insertIntoStock.php", prepareData(details))
         .then(data => {
-            if(data != "Error") {
+            if (data != "Error") {
                 $("#modal-1").modal('toggle');
                 successToast("Batch added to stock successfully");
                 fetchStock();
@@ -347,7 +346,7 @@ function editBatch(batch_id, quantity, expiration_date) {
     };
     postData("assets/php/editBatch.php", prepareData(details))
         .then(data => {
-            if(data != "Error") {
+            if (data != "Error") {
                 $("#modal-2").modal('toggle');
                 successToast("Batch edited successfully");
                 fetchStock();
@@ -361,22 +360,10 @@ function removeBatch(batch_id) {
     };
     postData("assets/php/removeBatch.php", prepareData(details))
         .then(data => {
-            if(data != "Error") {
+            if (data != "Error") {
                 $("#modal-3").modal('toggle');
                 successToast("Batch deleted successfully");
                 fetchStock();
             }
         });
-}
-function configureToast() {
-    const progress = $(".progress");
-    var toastElement = new bootstrap.Toast($("#customToast"), { animation: true, delay: 2000 });
-    $(document).on("click", ".toastBtns", function () {
-        toastElement.show();
-        progress.addClass("active");
-        let timer;
-        timer = setTimeout(() => {
-            progress.removeClass("active");
-        }, 2300);
-    })
 }

@@ -17,7 +17,6 @@ $(function () {
     setEvents();
     fetchMedicationList();
     fillTransaction();
-    configureToast();
 })
 
 function setEvents() {
@@ -46,7 +45,8 @@ function setEvents() {
         displayLog();
     })
 
-    $(document).on("click", ".tablesorter > thead > tr > th", function () {
+    $(document).on("click", ".tablesorter > thead > tr > th", function (e) {
+        e.stopImmediatePropagation();
         if (this.id != "")
             sortColumn(this.id);
     })
@@ -503,17 +503,4 @@ function fillDetailsModal(details) {
     }
     $("#totalPriceDetails").html(total.toLocaleString("en-US") + " LBP");
     $("#orderDetailsTable").html(r.join(""));
-}
-
-function configureToast() {
-    const progress = $(".progress");
-    var toastElement = new bootstrap.Toast($("#customToast"), { animation: true, delay: 2000 });
-    $(document).on("click", "#confTransBtn", function () {
-        toastElement.show();
-        progress.addClass("active");
-        let timer;
-        timer = setTimeout(() => {
-            progress.removeClass("active");
-        }, 2300);
-    })
 }

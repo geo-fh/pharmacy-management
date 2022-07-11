@@ -11,7 +11,6 @@ var pages;
 $(function () {
     fetchUsers();
     setEvents();
-    configureToast();
 })
 
 function setEvents() {
@@ -36,7 +35,8 @@ function setEvents() {
         displayUsers();
     })
 
-    $(document).on("click", ".tablesorter > thead > tr > th", function () {
+    $(document).on("click", ".tablesorter > thead > tr > th", function (e) {
+        e.stopImmediatePropagation();
         if (this.id != "")
             sortColumn(this.id);
     })
@@ -56,6 +56,10 @@ function setEvents() {
 
     $(document).on("click", "#submitManage", function () {
         submitManage();
+    })
+
+    $(document).on("hidden.bs.modal", "#modal-1", function () {
+        $("#newPassword").val("");
     })
 }
 
@@ -309,37 +313,32 @@ function submitManage() {
     } else {
         updateDetails(user_id, email_address, password, activated, user_type);
     }
+    $("#newPassword").val("");
 }
 
 function updateDetails(user_id, email_address, password, activated, user_type) {
-    var details = {
-        'user_id': user_id,
-        'email_address': email_address,
-        'password': password,
-        'activated': activated,
-        'user_type': user_type
-    };
-    postData("assets/php/editUser.php", prepareData(details))
-        .then(data => {
-            if (data != "Error") {
-                successToast("Account edited successfully");
-                $("#modal-1").modal('toggle');
-                fetchUsers();
-            } else {
-                failureToast("Error");
-            }
-        });
-}
-
-function configureToast() {
-    const progress = $(".progress");
-    var toastElement = new bootstrap.Toast($("#customToast"), { animation: true, delay: 2000 });
-    $(document).on("click", "#submitManage", function () {
-        toastElement.show();
-        progress.addClass("active");
-        let timer;
-        timer = setTimeout(() => {
-            progress.removeClass("active");
-        }, 2300);
+    hash(password).then(hash => {
+        var password2;
+        if(password == "")
+            password2 = password;
+        else
+            password2 = hash;
+        var details = {
+            'user_id': user_id,
+            'email_address': email_address,
+            'password': password2,
+            'activated': activated,
+            'user_type': user_type
+        };
+        postData("assets/php/editUser.php", prepareData(details))
+            .then(data => {
+                if (data != "Error") {
+                    successToast("Account edited successfully");
+                    $("#modal-1").modal('toggle');
+                    fetchUsers();
+                } else {
+                    failureToast("Error");
+                }
+            });
     })
 }

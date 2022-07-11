@@ -1,41 +1,42 @@
+var user_type, user_id;
 $("#loginForm").on("submit", function (e) {
-  e.preventDefault();
-  var usertype;
-  var details = {
-    'email': $("#InputEmail").val(),
-    'password': $("#InputPassword").val()
-  };
-  postData("assets/php/login.php", prepareData(details))
-    .then(data => {
-      if (data.length == 0) {
-        alert('Incorrect email or password.');
-        return;
-      } else {
-        usertype = data[0].user_type;
-        console.log(usertype);
-        saveSession(usertype);
-      }
-    });
+    e.preventDefault();
+    hash($("#InputPassword").val()).then(data => {
+        var details = {
+            'email': $("#InputEmail").val(),
+            'password': data
+        };
+        postData("assets/php/login.php", prepareData(details))
+            .then(data => {
+                if (data.length == 0) {
+                    failureToast('Incorrect email or password.');
+                    return;
+                } else {
+                    user_id = data[0].user_id;
+                    user_type = data[0].user_type;
+                    generateToken();
+                }
+            });
+    })
 })
 
-function saveSession(email, usertype) {
-  document.cookie = "usertype=" + usertype;
-}
-
-function successToast(text) {
-  $("#toastSymbol").removeClass("fa-multiplication failure");
-  $("#toastSymbol").addClass("fa-check success");
-  $("#toastMessage1").removeClass("failure");
-  $("#toastMessage1").addClass("success");
-  $("#toastMessage1").text("Success");
-  $("#toastMessage2").text(text);
-}
-
-function failureToast(text) {
-  $("#toastSymbol").removeClass("fa-check success");
-  $("#toastSymbol").addClass("fa-multiplication failure");
-  $("#toastMessage1").removeClass("success");
-  $("#toastMessage1").addClass("failure");
-  $("#toastMessage1").text("Failure");
-  $("#toastMessage2").text(text);
+function generateToken() {
+    var string = new Date() + $("#InputEmail").val();
+    hash(string).then(token => {
+        var details = {
+            'user_id': user_id,
+            'token': token
+        };
+        postData("assets/php/insertSession.php", prepareData(details))
+            .then(response => {
+                if(response != "Error") {
+                    saveSession(token);
+                    if(user_type == "3") {
+                        window.location.href = 'index';
+                    } else {
+                        window.location.href = 'dashboard';
+                    }
+                }
+            });
+    })
 }
