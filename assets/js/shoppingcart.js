@@ -58,7 +58,7 @@ function populateCart() {
         r[++j] = shoppingCart[i].medication_id;
         r[++j] = ".jpg\" style=\"max-width: 100px; max-height: 60px;\"></td><td>";
         r[++j] = medication[index].medication_name;
-        r[++j] = "</td><td><div class=\"input-group\"><button id=\"minusBtn";
+        r[++j] = "</td><td><div class=\"input-group2\"><button id=\"minusBtn";
         r[++j] = shoppingCart[i].medication_id;
         r[++j] = "\" type=\"button\" class=\"btn btn-decrease\"><i class=\"fas fa-minus\"></i></button><input id=\"quantity";
         r[++j] = shoppingCart[i].medication_id;
